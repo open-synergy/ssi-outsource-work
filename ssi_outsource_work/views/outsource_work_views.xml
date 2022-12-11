@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 OpenSynergy Indonesia
+     Copyright 2022 PT. Simetri Sinergi Indonesia
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+<odoo>
+<record id="outsource_work_view_search" model="ir.ui.view">
+    <field name="name">outsource_work - search</field>
+    <field name="model">outsource_work</field>
+    <field name="mode">primary</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="arch" type="xml">
+        <data />
+    </field>
+</record>
+
+<record id="outsource_work_view_tree" model="ir.ui.view">
+    <field name="name">outsource_work.tree</field>
+    <field name="model">outsource_work</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="partner_id" />
+                <field name="type_id" />
+                <field name="date" />
+                <field name="model_id" optional="show" />
+                <field name="model_name" invisible="1" />
+                <field name="work_object_reference" optional="show" />
+                <field name="outstanding_id" />
+                <field name="analytic_account_id" />
+                <field name="currency_id" optional="hide" />
+                <field name="pricelist_id" optional="hide" />
+                <field name="price_unit" optional="hide" />
+                <field name="uom_quantity" string="Quantity" optional="hide" />
+                <field name="uom_id" optional="hide" />
+                <field name="quantity" invisible="1" />
+                <field name="price_subtotal" optional="hide" />
+                <field name="tax_ids" widget="many2many_tags" optional="hide" />
+                <field name="price_tax" optional="hide" />
+                <field name="price_total" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+    <record id="outsource_work_view_form" model="ir.ui.view">
+        <field name="name">outsource_work.form</field>
+        <field name="model">outsource_work</field>
+        <field name="mode">primary</field>
+        <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_form"
+        />
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="outstanding_id" />
+                    <field name="model_id" invisible="0" force_save="1" />
+                    <field name="model_name" invisible="1" />
+                    <field name="work_object_id" invisible="1" />
+                    <field name="work_object_reference" />
+                    <field name="partner_id" />
+                    <field name="date" />
+                </xpath>
+                <xpath expr="//group[@name='header_right']" position="inside">
+                    <group name="right1" colspan="2" col="2" string="Work Info">
+                        <field name="type_id" />
+                        <field name="product_id" />
+                        <field name="usage_id" />
+                        <field name="account_id" />
+
+                        <field
+                            name="allowed_analytic_account_ids"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                        <field
+                            name="analytic_account_id"
+                            domain="[('id', 'in', allowed_analytic_account_ids)]"
+                        />
+                    </group>
+                    <group name="right1" colspan="2" col="2" string="Cost">
+                        <field
+                            name="allowed_uom_ids"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                        <label for="uom_quantity" string="Quantity" />
+                        <div>
+                            <field name="uom_quantity" class="oe_inline" />
+                            <field
+                                name="uom_id"
+                                domain="[('id','in',allowed_uom_ids)]"
+                                attrs="{'required':[('product_id','!=',False)]}"
+                                class="oe_inline"
+                            />
+                        </div>
+                        <field name="quantity" invisible="1" />
+                        <field name="currency_id" force_save="1" />
+                        <field
+                            name="allowed_pricelist_ids"
+                            widget="many2many_tags"
+                            invisible="1"
+                        />
+                        <field
+                            name="pricelist_id"
+                            domain="[('id','in',allowed_pricelist_ids)]"
+                            force_save="1"
+                        />
+                        <field name="price_unit" />
+                        <field name="price_subtotal" />
+                        <field name="tax_ids" widget="many2many_tags" />
+                        <field name="price_tax" />
+                        <field name="price_total" />
+                    </group>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+    <record id="outsource_work_action" model="ir.actions.act_window">
+        <field name="name">Outsource Works</field>
+        <field name="res_model">outsource_work</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="outsource_work_menu"
+        name="Outsource Works"
+        parent="menu_root_outsource_work"
+        action="outsource_work_action"
+        groups="outsource_work_viewer_group"
+        sequence="10"
+    />
+</odoo>
