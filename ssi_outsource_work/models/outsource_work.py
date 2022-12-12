@@ -315,16 +315,15 @@ class OutsourceWork(models.Model):
         outstanding = self.outstanding_id
         move_date = outstanding.date
 
-        amount_currency = abs(self.price_subtotal)
+        amount_currency = self.price_subtotal
         amount = currency.with_context(date=move_date).compute(
             amount_currency,
             outstanding.currency_id,
         )
 
         if amount > 0.0:
-            debit = amount
+            debit = abs(amount)
         else:
-            credit = amount
-            amount_currency *= -1.0
+            credit = abs(amount)
 
         return debit, credit, amount_currency

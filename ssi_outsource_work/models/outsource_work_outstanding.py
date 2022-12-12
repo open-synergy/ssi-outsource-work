@@ -358,17 +358,16 @@ class OutsourceWorkOutstanding(models.Model):
         debit = credit = amount = amount_currency = 0.0
         move_date = self.date
 
-        amount_currency = abs(self.amount_total)
+        amount_currency = self.amount_total
         amount = currency.with_context(date=move_date).compute(
             amount_currency,
             self.company_id.currency_id,
         )
 
         if amount < 0.0:
-            debit = amount
+            debit = abs(amount)
         else:
-            credit = amount
-            amount_currency *= -1.0
+            credit = abs(amount)
 
         return debit, credit, amount_currency
 
