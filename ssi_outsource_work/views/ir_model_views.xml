@@ -25,6 +25,29 @@
                                 attrs="{'invisible': [('outsource_work_aa_selection_method', '=', 'fixed')]}"
                             />
                     </group>
+                    <group
+                            name="outsource_work_pricelist"
+                            colspan="4"
+                            col="2"
+                            string="Pricelist"
+                        >
+                        <field
+                                name="outsource_work_pricelist_selection_method"
+                                string="Selection Method"
+                            />
+                        <field
+                                name="outsource_work_pricelist_ids"
+                                string="Allowed Pricelists"
+                                attrs="{'invisible': [('outsource_work_pricelist_selection_method','=','python')]}"
+                            />
+                        <field
+                                name="outsource_work_pricelist_python_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                                string="Python Code"
+                                attrs="{'invisible': [('outsource_work_pricelist_selection_method', '=', 'fixed')]}"
+                            />
+                    </group>
                 </page>
             </xpath>
         </data>

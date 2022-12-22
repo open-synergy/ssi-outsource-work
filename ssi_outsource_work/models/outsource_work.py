@@ -183,6 +183,11 @@ class OutsourceWork(models.Model):
         compute="_compute_allowed_analytic_account_ids",
         store=False,
     )
+    allowed_pricelist_ids = fields.Many2many(
+        string="Allowed Pricelist",
+        comodel_name="product.pricelist",
+        compute="_compute_allowed_pricelist_ids",
+    )
     analytic_account_id = fields.Many2one(
         string="Analytic Account",
         comodel_name="account.analytic.account",
@@ -217,6 +222,31 @@ class OutsourceWork(models.Model):
         default="draft",
         copy=False,
     )
+
+    @api.depends(
+        "model_id",
+        "currency_id",
+    )
+    def _compute_allowed_pricelist_ids(self):
+        Pricelist = self.env["product.pricelist"]
+        for document in self:
+            result = []
+            if document.model_id:
+                model = document.model_id
+                if model.outsource_work_pricelist_selection_method == "fixed":
+                    if model.outsource_work_pricelist_ids:
+                        result += model.outsource_work_pricelist_ids.ids
+                elif model.outsource_work_pricelist_selection_method == "python":
+                    pricelist_ids = self._evaluate_worklog_pricelist(model)
+                    if pricelist_ids:
+                        result = pricelist_ids
+                if len(result) > 0:
+                    criteria = [
+                        ("id", "in", result),
+                        ("currency_id", "=", document.currency_id.id),
+                    ]
+                    result = Pricelist.search(criteria).ids
+            document.allowed_pricelist_ids = result
 
     @api.model
     def _get_policy_field(self):

@@ -33,3 +33,29 @@ class IrModel(models.Model):
 result = []""",
         copy=True,
     )
+    # Pricelist
+    outsource_work_pricelist_selection_method = fields.Selection(
+        string="Outsource Work Pricelist Selection Method",
+        selection=[
+            ("fixed", "Fixed"),
+            ("python", "Python Code"),
+        ],
+        default="fixed",
+        required=False,
+    )
+    outsource_work_pricelist_ids = fields.Many2many(
+        string="Allowed Outsource Work Pricelists",
+        comodel_name="product.pricelist",
+        relation="rel_model_2_outsource_work_pricelist",
+        column1="model_id",
+        column2="pricelist_id",
+    )
+    outsource_work_pricelist_python_code = fields.Text(
+        string="Python Code for Outsource Work Pricelist",
+        default="""# Available variables:
+#  - env: Odoo Environment on which the action is triggered.
+#  - document: record on which the action is triggered; may be void.
+#  - result: Return result, the value is list of Analytic Accounts.
+result = []""",
+        copy=True,
+    )
