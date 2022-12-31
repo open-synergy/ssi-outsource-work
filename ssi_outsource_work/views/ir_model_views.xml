@@ -13,16 +13,21 @@
             <xpath expr="//notebook" position="inside">
                 <page name="page_outsource_work" string="Outsource Work">
                     <group name="outsource_work" colspan="4">
-                        <field name="outsource_work_aa_selection_method" />
+                        <field
+                                name="outsource_work_aa_selection_method"
+                                string="Selection Method"
+                            />
                         <field
                                 name="outsource_work_aa_ids"
                                 attrs="{'invisible': [('outsource_work_aa_selection_method','=','python')]}"
+                                string="Allowed Analytic Accounts"
                             />
                         <field
                                 name="outsource_work_python_code"
                                 widget="ace"
                                 options="{'mode': 'python'}"
                                 attrs="{'invisible': [('outsource_work_aa_selection_method', '=', 'fixed')]}"
+                                string="Python Code"
                             />
                     </group>
                     <group
