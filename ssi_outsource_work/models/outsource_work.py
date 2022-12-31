@@ -295,6 +295,14 @@ class OutsourceWork(models.Model):
         pass
 
     @api.onchange(
+        "model_id",
+    )
+    def onchange_analytic_account_id(self):
+        self.analytic_account_id = False
+        if len(self.allowed_analytic_account_ids) > 0:
+            self.analytic_account_id = self.allowed_analytic_account_ids[0]._origin.id
+
+    @api.onchange(
         "type_id",
     )
     def onchange_usage_id(self):

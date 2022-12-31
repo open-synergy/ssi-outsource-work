@@ -12,7 +12,8 @@ class MixinOutsourceWorkObject(models.AbstractModel):
     _description = "Outsource Work Object Mixin"
 
     _work_log_create_page = False
-    _work_log_page_xpath = "//page[last()]"
+    _work_log_page_xpath = "//page[1]"
+    _work_log_template_position = "before"
 
     outsource_work_ids = fields.One2many(
         string="Outsource Work Logs",
@@ -39,7 +40,10 @@ class MixinOutsourceWorkObject(models.AbstractModel):
                 )
                 for node in node_xpath:
                     new_node = etree.fromstring(str_element)
-                    node.addnext(new_node)
+                    if self._work_log_template_position == "after":
+                        node.addnext(new_node)
+                    elif self._work_log_template_position == "before":
+                        node.addprevious(new_node)
 
             View = self.env["ir.ui.view"]
 
