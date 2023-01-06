@@ -14,6 +14,7 @@ class OutsourceWorkOutstandingTax(models.Model):
         string="# Outstanding",
         comodel_name="outsource_work_outstanding",
         required=True,
+        ondelete="cascade",
     )
     tax_id = fields.Many2one(
         string="Tax",
