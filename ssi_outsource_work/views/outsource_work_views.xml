@@ -12,7 +12,59 @@
             ref="ssi_transaction_mixin.mixin_transaction_view_search"
         />
     <field name="arch" type="xml">
-        <data />
+        <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="partner_id" widget="many2one_avatar" />
+                <field name="type_id" />
+                <field name="date" />
+                <field name="model_id" />
+                <field name="outstanding_id" />
+                <field name="analytic_account_id" />
+                <field name="currency_id" />
+                <field name="pricelist_id" />
+                <field name="price_subtotal" />
+                <field name="price_tax" />
+                <field name="price_total" />
+            </xpath>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter
+                        name="grp_partner"
+                        string="Partner"
+                        context="{'group_by':'partner_id'}"
+                    />
+                <filter
+                        name="grp_type"
+                        string="Type"
+                        context="{'group_by':'type_id'}"
+                    />
+                <filter
+                        name="grp_analytic_account"
+                        string="Analytic Account"
+                        context="{'group_by':'analytic_account_id'}"
+                    />
+                <filter name="grp_date" string="Date" context="{'group_by':'date'}" />
+                <filter
+                        name="grp_model"
+                        string="Model"
+                        context="{'group_by':'model_id'}"
+                    />
+                <filter
+                        name="grp_outstanding"
+                        string="# Outstanding"
+                        context="{'group_by':'outstanding_id'}"
+                    />
+                <filter
+                        name="grp_currency"
+                        string="Currency"
+                        context="{'group_by':'currency_id'}"
+                    />
+                <filter
+                        name="grp_pricelist"
+                        string="Pricelist"
+                        context="{'group_by':'pricelist_id'}"
+                    />
+            </xpath>
+        </data>
     </field>
 </record>
 
