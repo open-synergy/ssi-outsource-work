@@ -4,7 +4,7 @@
 
 {
     "name": "Outsource Work",
-    "version": "14.0.1.4.0",
+    "version": "14.0.1.6.0",
     "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "LGPL-3",
@@ -38,6 +38,7 @@
         "views/outsource_work_views.xml",
         "views/outsource_work_outstanding_type_views.xml",
         "views/outsource_work_outstanding_views.xml",
+        "views/outsource_work_outstanding_batch_views.xml",
     ],
     "demo": [],
 }

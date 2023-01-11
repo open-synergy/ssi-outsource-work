@@ -150,4 +150,79 @@
         />
 </record>
 
+
+
+<!-- Workflow: Outsource Work Outstanding Batch -->
+<record id="outsource_work_outstanding_batch_viewer_group" model="res.groups">
+    <field name="name">Viewer</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_workflow_module_category"
+        />
+</record>
+
+<record id="outsource_work_outstanding_batch_user_group" model="res.groups">
+    <field name="name">User</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_workflow_module_category"
+        />
+    <field
+            name="implied_ids"
+            eval="[(4, ref('outsource_work_outstanding_batch_viewer_group'))]"
+        />
+</record>
+
+<record id="outsource_work_outstanding_batch_validator_group" model="res.groups">
+    <field name="name">Validator</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_workflow_module_category"
+        />
+    <field
+            name="implied_ids"
+            eval="[(4, ref('outsource_work_outstanding_batch_user_group'))]"
+        />
+    <field
+            name="users"
+            eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"
+        />
+</record>
+
+<!-- Data Ownership: Outsource Work Outstanding Batch -->
+<record id="outsource_work_outstanding_batch_company_group" model="res.groups">
+    <field name="name">Company</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_data_ownership_module_category"
+        />
+</record>
+
+<record id="outsource_work_outstanding_batch_company_child_group" model="res.groups">
+    <field name="name">Company and All Child Companies</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_data_ownership_module_category"
+        />
+    <field
+            name="implied_ids"
+            eval="[(4, ref('outsource_work_outstanding_batch_company_group'))]"
+        />
+</record>
+
+<record id="outsource_work_outstanding_batch_all_group" model="res.groups">
+    <field name="name">All</field>
+    <field
+            name="category_id"
+            ref="outsource_work_outstanding_batch_data_ownership_module_category"
+        />
+    <field
+            name="implied_ids"
+            eval="[(4, ref('outsource_work_outstanding_batch_company_child_group'))]"
+        />
+    <field
+            name="users"
+            eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"
+        />
+</record>
 </odoo>

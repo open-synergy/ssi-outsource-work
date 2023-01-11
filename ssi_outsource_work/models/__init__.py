@@ -11,4 +11,6 @@ from . import (
     outsource_work_outstanding_type,
     outsource_work_outstanding,
     outsource_work_outstanding_tax,
+    outsource_work_outstanding_batch,
+    outsource_work_outstanding_batch_detail,
 )

@@ -61,4 +61,21 @@
     <field name="parent_id" ref="outsourcing_data_ownership_module_category" />
 </record>
 
+<!-- Outsource Outstanding Batch -->
+<record
+        id="outsource_work_outstanding_batch_workflow_module_category"
+        model="ir.module.category"
+    >
+    <field name="name">Outsource Work Outstanding Batch</field>
+    <field name="parent_id" ref="outsourcing_workflow_module_category" />
+</record>
+
+<record
+        id="outsource_work_outstanding_batch_data_ownership_module_category"
+        model="ir.module.category"
+    >
+    <field name="name">Outsource Work Outstanding Batch</field>
+    <field name="parent_id" ref="outsourcing_data_ownership_module_category" />
+</record>
+
 </odoo>

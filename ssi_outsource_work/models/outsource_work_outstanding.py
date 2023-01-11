@@ -82,6 +82,11 @@ class OutsourceWorkOutstanding(models.Model):
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
+    batch_id = fields.Many2one(
+        string="# Batch",
+        comodel_name="outsource_work_outstanding_batch",
+        readonly=True,
+    )
     pricelist_id = fields.Many2one(
         required=False,
     )
