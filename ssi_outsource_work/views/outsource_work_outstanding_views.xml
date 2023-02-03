@@ -19,9 +19,9 @@
                 <field name="date_due" />
                 <field name="date_start" />
                 <field name="date_end" />
-                <field name="amount_untaxed" />
-                <field name="amount_tax" />
-                <field name="amount_total" />
+                <field name="amount_untaxed" sum="Total Untaxed" />
+                <field name="amount_tax" sum="Total Tax" />
+                <field name="amount_total" sum="Total" />
             </xpath>
         </data>
     </field>
@@ -155,6 +155,7 @@
                             <field name="tax_id" />
                             <field name="currency_id" invisible="1" />
                             <field name="account_id" />
+                            <field name="analytic_account_id" />
                             <field name="manual" />
                             <field name="base_amount" />
                             <field name="tax_amount" />
@@ -164,6 +165,7 @@
                                 <field name="tax_id" />
                                 <field name="currency_id" invisible="1" />
                                 <field name="account_id" />
+                                <field name="analytic_account_id" />
                                 <field name="manual" />
                                 <field name="base_amount" />
                                 <field name="tax_amount" />

@@ -494,7 +494,13 @@ class OutsourceWorkOutstanding(models.Model):
 
     def get_grouping_key(self, tax_line):
         self.ensure_one()
-        return str(tax_line["tax_id"]) + "-" + str(tax_line["account_id"])
+        return (
+            str(tax_line["tax_id"])
+            + "-"
+            + str(tax_line["account_id"])
+            + "-"
+            + str(tax_line["analytic_account_id"])
+        )
 
     def _prepare_tax_line_vals(self, line, tax):
         vals = {
@@ -504,5 +510,6 @@ class OutsourceWorkOutstanding(models.Model):
             "base_amount": tax["base"],
             "manual": False,
             "account_id": tax["account_id"],
+            "analytic_account_id": line.analytic_account_id.id,
         }
         return vals
