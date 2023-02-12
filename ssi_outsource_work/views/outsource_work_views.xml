@@ -139,6 +139,17 @@
                                 />
                             </group>
                             <group name="cost" colspan="1" col="2" string="Cost">
+                                <label for="uom_quantity" string="Quantity" />
+                                <div class="o_row">
+                                    <field name="uom_quantity" class="oe_inline" />
+                                    <field
+                                        name="uom_id"
+                                        domain="[('id','in',allowed_uom_ids)]"
+                                        attrs="{'required':[('product_id','!=',False)]}"
+                                        class="oe_inline"
+                                    />
+                                </div>
+                                <field name="quantity" invisible="1" />
                                 <field name="currency_id" force_save="1" />
                                 <field
                                     name="allowed_pricelist_ids"
@@ -156,17 +167,6 @@
                                     widget="many2many_tags"
                                     invisible="1"
                                 />
-                                <label for="uom_quantity" string="Quantity" />
-                                <div class="o_row">
-                                    <field name="uom_quantity" class="oe_inline" />
-                                    <field
-                                        name="uom_id"
-                                        domain="[('id','in',allowed_uom_ids)]"
-                                        attrs="{'required':[('product_id','!=',False)]}"
-                                        class="oe_inline"
-                                    />
-                                </div>
-                                <field name="quantity" invisible="1" />
                                 <field name="tax_ids" widget="many2many_tags" />
                                 <field name="price_subtotal" />
                                 <field name="price_tax" />
