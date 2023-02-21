@@ -188,6 +188,36 @@ class OutsourceWork(models.Model):
         comodel_name="product.pricelist",
         compute="_compute_allowed_pricelist_ids",
     )
+
+    @api.depends(
+        "model_id",
+    )
+    def _compute_allowed_usage_ids(self):
+        Usage = self.env["product.usage_type"]
+        for document in self:
+            result = []
+            if document.model_id:
+                model = document.model_id
+                if model.outsource_work_usage_selection_method == "fixed":
+                    if model.outsource_work_usage_ids:
+                        result += model.outsource_work_usage_ids.ids
+                elif model.outsource_work_usage_selection_method == "python":
+                    usage_ids = self._evaluate_worklog_usage(model)
+                    if usage_ids:
+                        result = usage_ids
+                if len(result) > 0:
+                    criteria = [
+                        ("id", "in", result),
+                    ]
+                    result = Usage.search(criteria).ids
+            document.allowed_usage_ids = result
+
+    allowed_usage_ids = fields.Many2many(
+        string="Allowed Usage",
+        comodel_name="product.usage_type",
+        compute="_compute_allowed_usage_ids",
+    )
+
     analytic_account_id = fields.Many2one(
         string="Analytic Account",
         comodel_name="account.analytic.account",
@@ -288,6 +318,24 @@ class OutsourceWork(models.Model):
             raise UserError(msg_err)
         return res
 
+    def _evaluate_worklog_usage(self, model):
+        self.ensure_one()
+        res = False
+        localdict = self._get_localdict()
+        try:
+            safe_eval(
+                model.outsource_work_usage_python_code,
+                localdict,
+                mode="exec",
+                nocopy=True,
+            )
+            if "result" in localdict:
+                res = localdict["result"]
+        except Exception as error:
+            msg_err = _("Error evaluating conditions.\n %s") % error
+            raise UserError(msg_err)
+        return res
+
     @api.onchange(
         "product_id",
     )
@@ -303,12 +351,14 @@ class OutsourceWork(models.Model):
             self.analytic_account_id = self.allowed_analytic_account_ids[0]._origin.id
 
     @api.onchange(
-        "type_id",
+        "model_id",
+        "allowed_usage_ids",
     )
     def onchange_usage_id(self):
         self.usage_id = False
-        if self.type_id:
-            self.usage_id = self.type_id.usage_id
+        if self.allowed_usage_ids:
+            usage_type_id = self.allowed_usage_ids._origin[0]
+            self.usage_id = usage_type_id.id
 
     def _create_aml(self):
         self.ensure_one()
