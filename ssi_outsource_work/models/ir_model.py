@@ -59,3 +59,29 @@ result = []""",
 result = []""",
         copy=True,
     )
+    # Usage
+    outsource_work_usage_selection_method = fields.Selection(
+        string="Outsource Work Usage Selection Method",
+        selection=[
+            ("fixed", "Fixed"),
+            ("python", "Python Code"),
+        ],
+        default="fixed",
+        required=False,
+    )
+    outsource_work_usage_ids = fields.Many2many(
+        string="Allowed Outsource Work Usages",
+        comodel_name="product.usage_type",
+        relation="rel_model_2_outsource_work_usage",
+        column1="model_id",
+        column2="usage_id",
+    )
+    outsource_work_usage_python_code = fields.Text(
+        string="Python Code for Outsource Work Usage",
+        default="""# Available variables:
+#  - env: Odoo Environment on which the action is triggered.
+#  - document: record on which the action is triggered; may be void.
+#  - result: Return result, the value is list of Analytic Accounts.
+result = []""",
+        copy=True,
+    )
