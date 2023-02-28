@@ -53,6 +53,29 @@
                                 attrs="{'invisible': [('outsource_work_pricelist_selection_method', '=', 'fixed')]}"
                             />
                     </group>
+                    <group
+                            name="outsource_work_usage"
+                            colspan="4"
+                            col="2"
+                            string="Usage"
+                        >
+                        <field
+                                name="outsource_work_usage_selection_method"
+                                string="Selection Method"
+                            />
+                        <field
+                                name="outsource_work_usage_ids"
+                                string="Allowed Usages"
+                                attrs="{'invisible': [('outsource_work_usage_selection_method','=','python')]}"
+                            />
+                        <field
+                                name="outsource_work_usage_python_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                                string="Python Code"
+                                attrs="{'invisible': [('outsource_work_usage_selection_method', '=', 'fixed')]}"
+                            />
+                    </group>
                 </page>
             </xpath>
         </data>

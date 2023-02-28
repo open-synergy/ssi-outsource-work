@@ -126,7 +126,15 @@
                             <group name="work" colspan="1" col="2" string="Work">
                                 <field name="type_id" />
                                 <field name="product_id" invisible="1" />
-                                <field name="usage_id" />
+                                <field
+                                    name="allowed_usage_ids"
+                                    widget="many2many_tags"
+                                    invisible="1"
+                                />
+                                <field
+                                    name="usage_id"
+                                    domain="[('id', 'in', allowed_usage_ids)]"
+                                />
                                 <field name="account_id" />
                                 <field
                                     name="allowed_analytic_account_ids"

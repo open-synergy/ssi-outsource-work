@@ -23,8 +23,3 @@ class OutsourceWorkType(models.Model):
         required=True,
         ondelete="restrict",
     )
-    usage_id = fields.Many2one(
-        string="Default Usage",
-        comodel_name="product.usage_type",
-        ondelete="restrict",
-    )

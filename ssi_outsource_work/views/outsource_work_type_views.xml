@@ -40,7 +40,6 @@
             <xpath expr="//field[@name='active']" position="after">
                 <field name="category_id" />
                 <field name="product_id" />
-                <field name="usage_id" />
             </xpath>
         </data>
     </field>
