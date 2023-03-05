@@ -117,7 +117,7 @@
                     <field name="work_object_reference" />
                 </xpath>
                 <xpath expr="//group[@name='header_right']" position="inside">
-                    <field name="partner_id" widget="many2one_avatar" />
+                    <field name="partner_id" widget="many2one_avatar" domain="[('category_id.name', '=ilike', '%ssociate')]"/>
                     <field name="date" />
                 </xpath>
                 <xpath expr="//page[1]" position="before">
