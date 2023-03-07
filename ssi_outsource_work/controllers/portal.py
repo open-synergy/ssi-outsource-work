@@ -1,4 +1,6 @@
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# Copyright 2023 OpenSynergy Indonesia
+# Copyright 2023 PT. Simetri Sinergi Indonesia
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 
 from odoo import _, http
@@ -38,7 +40,10 @@ class CustomerPortal(CustomerPortal):
         )
 
     @http.route(
-        ["/my/outsource-work-outstandings", "/my/outsource-work-outstandings/page/<int:page>"],
+        [
+            "/my/outsource-work-outstandings",
+            "/my/outsource-work-outstandings/page/<int:page>",
+        ],
         type="http",
         auth="user",
         website=True,
@@ -79,9 +84,9 @@ class CustomerPortal(CustomerPortal):
         outsource_work_outstandings = Outstanding.search(
             domain, order=order, limit=self._items_per_page, offset=pager["offset"]
         )
-        request.session["my_outsource_work_outstandings_history"] = outsource_work_outstandings.ids[
-            :100
-        ]
+        request.session[
+            "my_outsource_work_outstandings_history"
+        ] = outsource_work_outstandings.ids[:100]
 
         values.update(
             {
@@ -95,7 +100,9 @@ class CustomerPortal(CustomerPortal):
                 "sortby": sortby,
             }
         )
-        return request.render("ssi_outsource_work.portal_my_outsource_work_outstandings", values)
+        return request.render(
+            "ssi_outsource_work.portal_my_outsource_work_outstandings", values
+        )
 
     @http.route(
         ["/my/outsource-work-outstanding/<int:outstanding_id>"],
@@ -103,7 +110,9 @@ class CustomerPortal(CustomerPortal):
         auth="public",
         website=True,
     )
-    def portal_my_outsource_work_outstanding(self, outstanding_id=None, access_token=None, **kw):
+    def portal_my_outsource_work_outstanding(
+        self, outstanding_id=None, access_token=None, **kw
+    ):
         try:
             outsource_work_outstanding_sudo = self._document_check_access(
                 "outsource_work_outstanding", outstanding_id, access_token
@@ -114,7 +123,7 @@ class CustomerPortal(CustomerPortal):
         values = self._outsource_work_outstanding_get_page_view_values(
             outsource_work_outstanding_sudo, access_token, **kw
         )
-        values.update({
-            'access_token': values.get('access_token', access_token)
-        })
-        return request.render("ssi_outsource_work.portal_my_outsource_work_outstanding", values)
+        values.update({"access_token": values.get("access_token", access_token)})
+        return request.render(
+            "ssi_outsource_work.portal_my_outsource_work_outstanding", values
+        )
