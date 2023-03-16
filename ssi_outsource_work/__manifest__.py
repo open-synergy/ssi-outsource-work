@@ -37,6 +37,7 @@
         "views/outsource_work_type_category_views.xml",
         "views/outsource_work_type_views.xml",
         "views/outsource_work_views.xml",
+        "views/outsource_work_portal_templates.xml",
         "views/outsource_work_outstanding_type_views.xml",
         "views/outsource_work_outstanding_views.xml",
         "views/outsource_work_outstanding_batch_views.xml",
