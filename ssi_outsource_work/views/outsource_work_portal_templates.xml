@@ -38,18 +38,12 @@
             <t t-call="portal.portal_docs_entry">
                 <t t-set="title">Outsource Works</t>
                 <t t-set="url" t-value="'/my/outsource-works'" />
-                <t
-                    t-set="placeholder_count"
-                    t-value="'outsource_work_count'"
-                />
+                <t t-set="placeholder_count" t-value="'outsource_work_count'" />
             </t>
         </xpath>
     </template>
 
-    <template
-        id="portal_my_outsource_works"
-        name="My Outsource Works"
-    >
+    <template id="portal_my_outsource_works" name="My Outsource Works">
         <t t-call="portal.portal_layout">
             <t t-set="title">Outsource Works</t>
             <t t-set="breadcrumbs_searchbar" t-value="True" />
@@ -77,10 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        t-foreach="outsource_works"
-                        t-as="outsource_work"
-                    >
+                    <tr t-foreach="outsource_works" t-as="outsource_work">
                         <td>
                             <a
                                 t-attf-href="/my/outsource-work/#{outsource_work.id}?{{ keep_query() }}"
@@ -88,19 +79,13 @@
                         </td>
                         <td><span t-field="outsource_work.type_id" /></td>
                         <td><span t-field="outsource_work.date" /></td>
+                        <td><span t-field="outsource_work.model_id" /></td>
                         <td><span
-                                t-field="outsource_work.model_id"
+                                t-field="outsource_work.work_object_reference.name"
                             /></td>
-                        <td><span t-field="outsource_work.work_object_reference" /></td>
-                        <td><span
-                                t-field="outsource_work.outstanding_id"
-                            /></td>
-                        <td><span
-                                t-field="outsource_work.analytic_account_id"
-                            /></td>
-                        <td><span
-                                t-field="outsource_work.price_total"
-                            /></td>
+                        <td><span t-field="outsource_work.outstanding_id" /></td>
+                        <td><span t-field="outsource_work.analytic_account_id" /></td>
+                        <td><span t-field="outsource_work.price_total" /></td>
                         <td class="tx_status">
                             <t t-if="outsource_work.state == 'draft'">
                                 <span class="badge badge-pill badge-info"><i
@@ -159,10 +144,7 @@
         </t>
     </template>
 
-    <template
-        id="portal_my_outsource_work"
-        name="My Outsource Work"
-    >
+    <template id="portal_my_outsource_work" name="My Outsource Work">
         <t t-call="portal.portal_layout">
             <t t-set="title">Outsource Work</t>
             <t t-call="portal.portal_record_layout">
@@ -179,41 +161,31 @@
                                     />)</small>
                                 <div class="col-3 col-md-2 text-right">
                                     <small class="text-right">Status:</small>
-                                    <t
-                                        t-if="outsource_work.state == 'draft'"
-                                    >
+                                    <t t-if="outsource_work.state == 'draft'">
                                         <span
                                             class=" badge badge-pill badge-info"
                                             title="Current stage of this assignment request"
                                         >Draft</span>
                                     </t>
-                                    <t
-                                        t-if="outsource_work.state == 'confirm'"
-                                    >
+                                    <t t-if="outsource_work.state == 'confirm'">
                                         <span
                                             class=" badge badge-pill badge-info"
                                             title="Current stage of this assignment request"
                                         >Waiting for Apporval</span>
                                     </t>
-                                    <t
-                                        t-if="outsource_work.state == 'done'"
-                                    >
+                                    <t t-if="outsource_work.state == 'done'">
                                         <span
                                             class=" badge badge-pill badge-info"
                                             title="Current stage of this assignment request"
                                         >Done</span>
                                     </t>
-                                    <t
-                                        t-if="outsource_work.state == 'cancel'"
-                                    >
+                                    <t t-if="outsource_work.state == 'cancel'">
                                         <span
                                             class=" badge badge-pill badge-info"
                                             title="Current stage of this assignment request"
                                         >Cancelled</span>
                                     </t>
-                                    <t
-                                        t-if="outsource_work.state == 'reject'"
-                                    >
+                                    <t t-if="outsource_work.state == 'reject'">
                                         <span
                                             class=" badge badge-pill badge-info"
                                             title="Current stage of this assignment request"
@@ -237,18 +209,31 @@
                     </div>
                     <div class="mb-1">
                         <strong>Document Reference:</strong> <span
-                            t-field="outsource_work.work_object_reference"
+                            t-field="outsource_work.work_object_reference.name"
                         />
                     </div>
                     <div class="mb-1">
-                        <strong>Date:</strong> <span
-                            t-field="outsource_work.date"
-                        />
+                        <strong>Date:</strong> <span t-field="outsource_work.date" />
                     </div>
                     <div class="mb-1">
                         <strong>Total:</strong> <span
                             t-field="outsource_work.price_total"
                         />
+                    </div>
+                    <div class="row mb-1" t-if="outsource_work.note">
+                        <div
+                            t-if="outsource_work.note"
+                            t-attf-class="col-12 col-lg-7 mb-4 mb-md-0 {{'col-lg-7'}}"
+                        >
+                            <hr class="mb-1" />
+                            <div class="d-flex my-2">
+                                <strong>Notes</strong>
+                            </div>
+                            <div
+                                class="py-1 px-2 bg-100 medium"
+                                t-field="outsource_work.note"
+                            />
+                        </div>
                     </div>
                 </t>
             </t>
