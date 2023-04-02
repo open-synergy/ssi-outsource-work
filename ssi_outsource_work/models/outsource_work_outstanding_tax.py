@@ -71,11 +71,7 @@ class OutsourceWorkOutstandingTax(models.Model):
     def _prepare_aml_data(self):
         self.ensure_one()
         outstanding = self.outstanding_id
-        aa_id = (
-            outstanding.analytic_account_id
-            and outstanding.analytic_account_id.id
-            or False
-        )
+        aa_id = self.analytic_account_id and self.analytic_account_id.id or False
         debit, credit, amount_currency = self._get_aml_amount(outstanding.currency_id)
         return {
             "move_id": outstanding.move_id.id,
