@@ -53,4 +53,7 @@ class OutsourceWorkOutstandingBatchDetail(models.Model):
             "date_end": batch.date_end,
             "payable_journal_id": batch.type_id.payable_journal_id.id,
             "payable_account_id": batch.type_id.payable_account_id.id,
+            "analytic_account_id": batch.analytic_account_id
+            and batch.analytic_account_id.id
+            or False,
         }
