@@ -3,17 +3,13 @@
      Copyright 2023 PT. Simetri Sinergi Indonesia
      License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
 <odoo>
-    <record id="outsource_work_rate_module_category" model="ir.module.category">
-        <field name="name">Outsource Work Rate</field>
-    </record>
-
     <!-- Workflow -->
     <record
         id="outsource_work_rate_workflow_module_category"
         model="ir.module.category"
     >
-        <field name="name">Outsource Work Rate - Workflow</field>
-        <field name="parent_id" ref="outsource_work_rate_module_category" />
+        <field name="name">Outsource Work Rate</field>
+        <field name="parent_id" ref="outsourcing_workflow_module_category" />
     </record>
 
     <!-- Data Ownership -->
@@ -21,7 +17,7 @@
         id="outsource_work_rate_data_ownership_module_category"
         model="ir.module.category"
     >
-        <field name="name">Outsource Work Rate - Data Ownership</field>
-        <field name="parent_id" ref="outsource_work_rate_module_category" />
+        <field name="name">Outsource Work Rate</field>
+        <field name="parent_id" ref="outsourcing_data_ownership_module_category" />
     </record>
 </odoo>
