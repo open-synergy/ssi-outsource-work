@@ -79,6 +79,7 @@
         name="Outsource Work Rates"
         parent="ssi_outsource_work.menu_root_outsource_work"
         action="outsource_work_rate_action"
+        groups="outsource_work_rate_viewer_group"
         sequence="40"
     />
 </odoo>
