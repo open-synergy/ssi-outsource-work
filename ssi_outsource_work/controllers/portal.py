@@ -1,6 +1,6 @@
 # Copyright 2023 OpenSynergy Indonesia
 # Copyright 2023 PT. Simetri Sinergi Indonesia
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
 from odoo import _, http
@@ -197,9 +197,7 @@ class CustomerPortal(CustomerPortal):
         outsource_works = OutsourceWork.search(
             domain, order=order, limit=self._items_per_page, offset=pager["offset"]
         )
-        request.session[
-            "my_outsource_works_history"
-        ] = outsource_works.ids[:100]
+        request.session["my_outsource_works_history"] = outsource_works.ids[:100]
 
         values.update(
             {
@@ -213,9 +211,7 @@ class CustomerPortal(CustomerPortal):
                 "sortby": sortby,
             }
         )
-        return request.render(
-            "ssi_outsource_work.portal_my_outsource_works", values
-        )
+        return request.render("ssi_outsource_work.portal_my_outsource_works", values)
 
     @http.route(
         ["/my/outsource-work/<int:outsource_work_id>"],
@@ -223,9 +219,7 @@ class CustomerPortal(CustomerPortal):
         auth="public",
         website=True,
     )
-    def portal_my_outsource_work(
-        self, outsource_work_id=None, access_token=None, **kw
-    ):
+    def portal_my_outsource_work(self, outsource_work_id=None, access_token=None, **kw):
         try:
             outsource_work_sudo = self._document_check_access(
                 "outsource_work", outsource_work_id, access_token
@@ -237,6 +231,4 @@ class CustomerPortal(CustomerPortal):
             outsource_work_sudo, access_token, **kw
         )
         values.update({"access_token": values.get("access_token", access_token)})
-        return request.render(
-            "ssi_outsource_work.portal_my_outsource_work", values
-        )
+        return request.render("ssi_outsource_work.portal_my_outsource_work", values)
