@@ -18,8 +18,8 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[ssi_outsource_work](ssi_outsource_work/) | 14.0.1.10.2 |  | Outsource Work
-[ssi_outsource_work_rate](ssi_outsource_work_rate/) | 14.0.1.0.0 |  | Outsource Work Rate
+[ssi_outsource_work](ssi_outsource_work/) | 14.0.1.11.0 |  | Outsource Work
+[ssi_outsource_work_rate](ssi_outsource_work_rate/) | 14.0.1.1.0 |  | Outsource Work Rate
 
 [//]: # (end addons)
 
