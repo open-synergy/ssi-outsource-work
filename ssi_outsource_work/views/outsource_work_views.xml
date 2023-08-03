@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2022 OpenSynergy Indonesia
      Copyright 2022 PT. Simetri Sinergi Indonesia
-     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
 <record id="outsource_work_view_search" model="ir.ui.view">
     <field name="name">outsource_work - search</field>
@@ -117,7 +117,11 @@
                     <field name="work_object_reference" />
                 </xpath>
                 <xpath expr="//group[@name='header_right']" position="inside">
-                    <field name="partner_id" widget="many2one_avatar" domain="[('category_id.name', '=ilike', '%ssociate')]"/>
+                    <field
+                        name="partner_id"
+                        widget="many2one_avatar"
+                        domain="[('category_id.name', '=ilike', '%ssociate')]"
+                    />
                     <field name="date" />
                 </xpath>
                 <xpath expr="//page[1]" position="before">
