@@ -59,6 +59,11 @@
                         context="{'group_by':'type_id'}"
                     />
                 <filter
+                        name="grp_batch"
+                        string=" #Batch"
+                        context="{'group_by':'batch_id'}"
+                    />
+                <filter
                         name="grp_analytic_account"
                         string="Analytic Account"
                         context="{'group_by':'analytic_account_id'}"
@@ -93,6 +98,7 @@
         <data>
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="partner_id" widget="many2one_avatar" />
+                <field name="batch_id" />
                 <field name="type_id" />
                 <field name="analytic_account_id" />
                 <field name="currency_id" />
@@ -120,7 +126,7 @@
                             type="object"
                             states="draft"
                             class="oe_highlight"
-                            icon="fa-refresh"
+                            icon="fa-eraser"
                             style="margin-right:4px"
                         />
                     <button

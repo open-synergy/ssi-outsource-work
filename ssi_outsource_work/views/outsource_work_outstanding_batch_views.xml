@@ -110,7 +110,7 @@
                             type="object"
                             states="draft"
                             class="oe_highlight"
-                            icon="fa-refresh"
+                            icon="fa-eraser"
                             style="margin-right:4px"
                         />
                     <field name="detail_ids">

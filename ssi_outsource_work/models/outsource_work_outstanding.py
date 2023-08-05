@@ -86,6 +86,7 @@ class OutsourceWorkOutstanding(models.Model):
         string="# Batch",
         comodel_name="outsource_work_outstanding_batch",
         readonly=True,
+        ondelete="restrict",
     )
     pricelist_id = fields.Many2one(
         required=False,
