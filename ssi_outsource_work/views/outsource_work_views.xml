@@ -19,6 +19,7 @@
                 <field name="date" />
                 <field name="model_id" />
                 <field name="outstanding_id" />
+                <field name="batch_id" />
                 <field name="analytic_account_id" />
                 <field name="currency_id" />
                 <field name="pricelist_id" />
@@ -54,6 +55,11 @@
                         context="{'group_by':'outstanding_id'}"
                     />
                 <filter
+                        name="grp_batch"
+                        string="# Outstanding Batch"
+                        context="{'group_by':'batch_id'}"
+                    />
+                <filter
                         name="grp_currency"
                         string="Currency"
                         context="{'group_by':'currency_id'}"
@@ -82,7 +88,8 @@
                 <field name="model_id" optional="show" />
                 <field name="model_name" invisible="1" />
                 <field name="work_object_reference" optional="show" />
-                <field name="outstanding_id" />
+                <field name="outstanding_id" optional="show" />
+                <field name="batch_id" optional="show" />
                 <field name="analytic_account_id" />
                 <field name="currency_id" optional="hide" />
                 <field name="pricelist_id" optional="hide" />
@@ -111,6 +118,7 @@
             <data>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="outstanding_id" />
+                    <field name="batch_id" />
                     <field name="model_id" invisible="0" force_save="1" />
                     <field name="model_name" invisible="1" />
                     <field name="work_object_id" invisible="1" />

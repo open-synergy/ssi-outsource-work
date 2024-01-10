@@ -6,6 +6,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
+from odoo.addons.ssi_decorator import ssi_decorator
+
 
 class OutsourceWork(models.Model):
     _name = "outsource_work"
@@ -234,6 +236,11 @@ class OutsourceWork(models.Model):
         comodel_name="outsource_work_outstanding",
         readonly=True,
     )
+    batch_id = fields.Many2one(
+        string="# Outstanding Batch",
+        related="outstanding_id.batch_id",
+        store=True,
+    )
     account_move_line_id = fields.Many2one(
         string="Journal Item",
         comodel_name="account.move.line",
@@ -411,3 +418,18 @@ class OutsourceWork(models.Model):
             credit = abs(amount)
 
         return debit, credit, amount_currency
+
+    @ssi_decorator.pre_cancel_check()
+    def _01_check_outstanding(self):
+        self.ensure_one()
+        if self.outstanding_id:
+            error_message = _(
+                """
+            Context: Cancel outsource work
+            Database ID: %s
+            Problem: Outsource work already have an outstanding
+            Solution: Cancel outsource work outstanding
+            """
+                % (self.id)
+            )
+            raise UserError(error_message)
