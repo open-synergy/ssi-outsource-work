@@ -13,6 +13,19 @@
         />
     <field name="arch" type="xml">
         <data>
+            <xpath expr="//separator[@name='activity']" position="before">
+                <separator name="reconciled" string="Payment Status" />
+                <filter
+                        name="dom_paid"
+                        string="Paid"
+                        domain="[('reconciled','=',True)]"
+                    />
+                <filter
+                        name="dom_unpaid"
+                        string="Unpaid"
+                        domain="[('reconciled','=',False)]"
+                    />
+            </xpath>
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="partner_id" widget="many2one_avatar" />
                 <field name="type_id" />
@@ -89,6 +102,7 @@
                 <field name="model_name" invisible="1" />
                 <field name="work_object_reference" optional="show" />
                 <field name="outstanding_id" optional="show" />
+                <field name="reconciled" optional="show" />
                 <field name="batch_id" optional="show" />
                 <field name="analytic_account_id" />
                 <field name="currency_id" optional="hide" />
@@ -118,6 +132,7 @@
             <data>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="outstanding_id" />
+                    <field name="reconciled" />
                     <field name="batch_id" />
                     <field name="model_id" invisible="0" force_save="1" />
                     <field name="model_name" invisible="1" />
