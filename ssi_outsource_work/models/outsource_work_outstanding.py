@@ -10,9 +10,9 @@ from odoo.addons.ssi_decorator import ssi_decorator
 class OutsourceWorkOutstanding(models.Model):
     _name = "outsource_work_outstanding"
     _inherit = [
-        "mixin.transaction_confirm",
-        "mixin.transaction_done",
         "mixin.transaction_cancel",
+        "mixin.transaction_done",
+        "mixin.transaction_confirm",
         "mixin.transaction_pricelist",
         "mixin.date_duration",
     ]
@@ -514,3 +514,9 @@ class OutsourceWorkOutstanding(models.Model):
             "analytic_account_id": line.analytic_account_id.id,
         }
         return vals
+
+    @ssi_decorator.insert_on_form_view()
+    def _insert_form_element(self, view_arch):
+        if self._automatically_insert_view_element:
+            view_arch = self._reconfigure_statusbar_visible(view_arch)
+        return view_arch

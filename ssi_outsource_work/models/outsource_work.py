@@ -12,9 +12,9 @@ from odoo.addons.ssi_decorator import ssi_decorator
 class OutsourceWork(models.Model):
     _name = "outsource_work"
     _inherit = [
-        "mixin.transaction_confirm",
-        "mixin.transaction_done",
         "mixin.transaction_cancel",
+        "mixin.transaction_done",
+        "mixin.transaction_confirm",
         "mixin.product_line_account",
     ]
     _description = "Outsource Work"
@@ -236,6 +236,10 @@ class OutsourceWork(models.Model):
         comodel_name="outsource_work_outstanding",
         readonly=True,
     )
+    reconciled = fields.Boolean(
+        related="outstanding_id.reconciled",
+        store=True,
+    )
     batch_id = fields.Many2one(
         string="# Outstanding Batch",
         related="outstanding_id.batch_id",
@@ -433,3 +437,9 @@ class OutsourceWork(models.Model):
                 % (self.id)
             )
             raise UserError(error_message)
+
+    @ssi_decorator.insert_on_form_view()
+    def _insert_form_element(self, view_arch):
+        if self._automatically_insert_view_element:
+            view_arch = self._reconfigure_statusbar_visible(view_arch)
+        return view_arch
