@@ -443,3 +443,8 @@ class OutsourceWork(models.Model):
         if self._automatically_insert_view_element:
             view_arch = self._reconfigure_statusbar_visible(view_arch)
         return view_arch
+
+    def onchange_pricelist_id(self):
+        super().onchange_pricelist_id()
+        if self._context.get('pricelist_id'):
+            self.pricelist_id = self._context['pricelist_id']
