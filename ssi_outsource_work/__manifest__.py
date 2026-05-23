@@ -44,4 +44,7 @@
         "views/outsource_work_outstanding_portal_templates.xml",
     ],
     "demo": [],
+    "contributors": [
+        "Andhitia Rama <andhitia.r@gmail.com>",
+    ],
 }
