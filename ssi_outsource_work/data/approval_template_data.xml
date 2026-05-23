@@ -2,8 +2,7 @@
 <!-- Copyright 2022 OpenSynergy Indonesia
      Copyright 2022 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-<odoo>
-<data noupdate="1">
+<odoo noupdate="1">
 <!-- Outsource Work -->
 <record id="approval_template_outsource_work" model="approval.template">
     <field name="name">Standard</field>
@@ -18,9 +17,9 @@
     <field name="template_id" ref="approval_template_outsource_work" />
     <field name="approver_selection_method">use_group</field>
     <field
-                name="approver_group_ids"
-                eval="[(6,0,[ref('outsource_work_validator_group')])]"
-            />
+            name="approver_group_ids"
+            eval="[(6,0,[ref('outsource_work_validator_group')])]"
+        />
 </record>
 
 <!-- Outsource Work Outstanding -->
@@ -34,22 +33,22 @@
 </record>
 
 <record
-            id="approval_template_outsource_work_outstanding_detail"
-            model="approval.template_detail"
-        >
+        id="approval_template_outsource_work_outstanding_detail"
+        model="approval.template_detail"
+    >
     <field name="template_id" ref="approval_template_outsource_work_outstanding" />
     <field name="approver_selection_method">use_group</field>
     <field
-                name="approver_group_ids"
-                eval="[(6,0,[ref('outsource_work_outstanding_validator_group')])]"
-            />
+            name="approver_group_ids"
+            eval="[(6,0,[ref('outsource_work_outstanding_validator_group')])]"
+        />
 </record>
 
 <!-- Outsource Work Outstanding Batch -->
 <record
-            id="approval_template_outsource_work_outstanding_batch"
-            model="approval.template"
-        >
+        id="approval_template_outsource_work_outstanding_batch"
+        model="approval.template"
+    >
     <field name="name">Standard</field>
     <field name="model_id" ref="model_outsource_work_outstanding_batch" />
     <field name="sequence" eval="100" />
@@ -59,19 +58,18 @@
 </record>
 
 <record
-            id="approval_template_outsource_work_outstanding_batch_detail"
-            model="approval.template_detail"
-        >
+        id="approval_template_outsource_work_outstanding_batch_detail"
+        model="approval.template_detail"
+    >
     <field
-                name="template_id"
-                ref="approval_template_outsource_work_outstanding_batch"
-            />
+            name="template_id"
+            ref="approval_template_outsource_work_outstanding_batch"
+        />
     <field name="approver_selection_method">use_group</field>
     <field
-                name="approver_group_ids"
-                eval="[(6,0,[ref('outsource_work_outstanding_batch_validator_group')])]"
-            />
+            name="approver_group_ids"
+            eval="[(6,0,[ref('outsource_work_outstanding_batch_validator_group')])]"
+        />
 </record>
 
-</data>
 </odoo>

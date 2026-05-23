@@ -31,4 +31,7 @@
         "views/outsource_work_rate_view.xml",
     ],
     "demo": [],
+    "contributors": [
+        "Andhitia Rama <andhitia.r@gmail.com>",
+    ],
 }

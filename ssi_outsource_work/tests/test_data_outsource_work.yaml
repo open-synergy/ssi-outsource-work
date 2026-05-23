@@ -1,0 +1,169 @@
+scenarios:
+  - name: "OutsourceWorkTypeCategory - Create master data"
+    steps:
+      - step: "Create outsource work type category"
+        action: "create"
+        model: "outsource_work_type_category"
+        save_as: "category"
+        values:
+          name: "Test Category OWT"
+          code: "TCOWT"
+
+      - step: "Assert category created"
+        action: "assert"
+        target: "category"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Category OWT"
+          code:
+            type: "value"
+            expected: "TCOWT"
+          active:
+            type: "value"
+            expected: true
+
+  - name: "OutsourceWorkType - Create master data with category"
+    steps:
+      - step: "Create outsource work type category"
+        action: "create"
+        model: "outsource_work_type_category"
+        save_as: "category"
+        values:
+          name: "Test Category for Type"
+          code: "TCOWTYPE"
+
+      - step: "Search product for type"
+        action: "search"
+        model: "product.product"
+        domain: [["sale_ok", "=", true]]
+        save_as: "product"
+        limit: 1
+
+      - step: "Create outsource work type"
+        action: "create"
+        model: "outsource_work_type"
+        save_as: "work_type"
+        values:
+          name: "Test Outsource Work Type"
+          code: "TOWT"
+          category_id: "EVAL: registry['category'].id"
+          product_id: "EVAL: registry['product'].id"
+
+      - step: "Assert type created"
+        action: "assert"
+        target: "work_type"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Outsource Work Type"
+          category_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "OutsourceWorkOutstandingType - Create master data"
+    steps:
+      - step: "Create outsource work outstanding type"
+        action: "create"
+        model: "outsource_work_outstanding_type"
+        save_as: "outstanding_type"
+        values:
+          name: "Test Outstanding Type"
+          code: "TOT"
+
+      - step: "Assert outstanding type created"
+        action: "assert"
+        target: "outstanding_type"
+        asserts:
+          id:
+            type: "value"
+            operator: "is_truthy"
+          name:
+            type: "value"
+            expected: "Test Outstanding Type"
+          active:
+            type: "value"
+            expected: true
+
+  - name: "OutsourceWorkOutstanding - Draft to Confirm Workflow"
+    steps:
+      - step: "Setup - create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Test Worker Outstanding"
+          is_company: false
+
+      - step: "Setup - create outstanding type with journal and account"
+        action: "search"
+        model: "account.journal"
+        domain: [["type", "in", ["purchase", "general"]]]
+        save_as: "journal"
+        limit: 1
+
+      - step: "Search for account"
+        action: "search"
+        model: "account.account"
+        domain: [["internal_type", "=", "payable"]]
+        save_as: "payable_account"
+        limit: 1
+
+      - step: "Create outstanding type"
+        action: "create"
+        model: "outsource_work_outstanding_type"
+        save_as: "outstanding_type"
+        values:
+          name: "Test Outstanding Type Workflow"
+          code: "TOTWF"
+          payable_journal_id: "EVAL: registry['journal'].id"
+          payable_account_id: "EVAL: registry['payable_account'].id"
+
+      - step: "Create outsource work outstanding"
+        action: "create"
+        model: "outsource_work_outstanding"
+        save_as: "outstanding"
+        as_user: "base.user_admin"
+        values:
+          partner_id: "EVAL: registry['partner'].id"
+          type_id: "EVAL: registry['outstanding_type'].id"
+          date: "2024-01-01"
+          date_start: "2024-01-01"
+          date_end: "2024-01-31"
+          date_due: "2024-01-31"
+          currency_id: "EVAL: env.ref('base.IDR').id"
+          payable_journal_id: "EVAL: registry['journal'].id"
+          payable_account_id: "EVAL: registry['payable_account'].id"
+
+      - step: "Assert outstanding in draft"
+        action: "assert"
+        target: "outstanding"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Confirm outstanding"
+        action: "call"
+        target: "outstanding"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "outstanding"
+        method: "invalidate_cache"
+
+      - step: "Assert outstanding confirmed"
+        action: "assert"
+        target: "outstanding"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"

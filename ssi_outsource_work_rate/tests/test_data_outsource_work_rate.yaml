@@ -1,0 +1,47 @@
+scenarios:
+  - name: "OutsourceWorkRate - Create and Confirm Workflow"
+    steps:
+      - step: "Setup - create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Test Rate Partner"
+          is_company: false
+
+      - step: "Create outsource work rate in draft"
+        action: "create"
+        model: "outsource_work_rate"
+        save_as: "rate"
+        as_user: "base.user_admin"
+        values:
+          partner_id: "EVAL: registry['partner'].id"
+          date: "2024-01-01"
+          date_start: "2024-01-01"
+
+      - step: "Assert rate in draft"
+        action: "assert"
+        target: "rate"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Confirm rate"
+        action: "call"
+        target: "rate"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "rate"
+        method: "invalidate_cache"
+
+      - step: "Assert rate confirmed"
+        action: "assert"
+        target: "rate"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
