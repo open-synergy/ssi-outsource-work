@@ -541,6 +541,7 @@ msgstr ""
 
 #. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_type__category_id
+#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_type_view_search
 msgid "Category"
 msgstr ""
 
@@ -1290,6 +1291,7 @@ msgstr ""
 
 #. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_type_category__parent_id
+#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_type_category_view_search
 msgid "Parent"
 msgstr ""
 
