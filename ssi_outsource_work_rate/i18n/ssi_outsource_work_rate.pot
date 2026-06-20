@@ -436,6 +436,7 @@ msgstr ""
 
 #. module: ssi_outsource_work_rate
 #: model:ir.model.fields,field_description:ssi_outsource_work_rate.field_outsource_work_rate__partner_id
+#: model_terms:ir.ui.view,arch_db:ssi_outsource_work_rate.outsource_work_rate_view_search
 msgid "Partner"
 msgstr ""
 
