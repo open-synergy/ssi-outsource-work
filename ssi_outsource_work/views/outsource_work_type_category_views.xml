@@ -12,7 +12,18 @@
         />
     <field name="mode">primary</field>
     <field name="arch" type="xml">
-        <data />
+        <data>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="parent_id" />
+                <group name="group_by">
+                    <filter
+                            name="grp_parent_id"
+                            string="Parent"
+                            context="{'group_by':'parent_id'}"
+                        />
+                </group>
+            </xpath>
+        </data>
     </field>
 </record>
 
