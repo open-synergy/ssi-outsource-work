@@ -63,7 +63,9 @@ class TestUiOutsourceWorkOutstandingBatch(HttpSavepointCase):
         if not cls.env["base.cancel_reason"].search(
             [("name", "=", "TOUR Cancel Reason")]
         ):
-            cls.env["base.cancel_reason"].create({"name": "TOUR Cancel Reason"})
+            cls.env["base.cancel_reason"].create(
+                {"name": "TOUR Cancel Reason", "code": "TOUR-CANCEL"}
+            )
         cls.batch_restart = _create_batch("TOUR-OWB-RESTART")
         cls.batch_restart.action_cancel()
 

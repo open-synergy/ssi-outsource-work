@@ -65,7 +65,9 @@ class TestUiOutsourceWorkOutstanding(HttpSavepointCase):
         cls.outstanding_reject = _create_outstanding("TOUR-OWO-REJECT")
         cls.outstanding_reject.action_confirm()
         cls.outstanding_cancel = _create_outstanding("TOUR-OWO-CANCEL")
-        cls.env["base.cancel_reason"].create({"name": "TOUR Cancel Reason"})
+        cls.env["base.cancel_reason"].create(
+            {"name": "TOUR Cancel Reason", "code": "TOUR-CANCEL"}
+        )
         cls.outstanding_restart = _create_outstanding("TOUR-OWO-RESTART")
         cls.outstanding_restart.action_cancel()
 
