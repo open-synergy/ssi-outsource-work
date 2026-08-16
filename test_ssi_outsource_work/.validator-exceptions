@@ -1,0 +1,1 @@
+ik modul-tak-punya-direktori-docs-belum-ada-ik-sama-sekali|docs/ -- modul fixture test_* (issue #25): kedua model hanya wadah untuk membuktikan gerbang atribut mixin.outsource_work_object, tidak punya alur bisnis untuk pengguna nyata sehingga tidak ada IK yang bisa ditulis.

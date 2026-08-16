@@ -1,0 +1,32 @@
+scenarios:
+  - name: "Default mixin - fields_view_get form does not raise AttributeError"
+    steps:
+      - step: "Create record without overriding _outsource_work_create_page"
+        action: "create"
+        model: "test_outsource_work_object_default"
+        save_as: "default_record"
+        values:
+          name: "Test Default"
+
+      - step: "Open form view - must not raise AttributeError"
+        action: "call"
+        target: "default_record"
+        method: "fields_view_get"
+        kwargs:
+          view_type: "form"
+
+  - name: "Enabled mixin - fields_view_get form does not raise AttributeError"
+    steps:
+      - step: "Create record with _outsource_work_create_page = True"
+        action: "create"
+        model: "test_outsource_work_object_enabled"
+        save_as: "enabled_record"
+        values:
+          name: "Test Enabled"
+
+      - step: "Open form view - must not raise AttributeError"
+        action: "call"
+        target: "enabled_record"
+        method: "fields_view_get"
+        kwargs:
+          view_type: "form"
