@@ -226,6 +226,10 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
             {
                 content: "Form is editable on a fresh widget tree",
                 trigger: ".o_form_view.o_form_editable",
+                // Second form open in this tour — headless Chrome under CI
+                // load can take longer than the 10s default to finish
+                // mounting after rapid list/form navigation cycles.
+                timeout: 20000,
                 run: function () {
                     // Assertion only.
                 },
@@ -279,6 +283,7 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
             {
                 content: "Form is editable on the fresh widget tree",
                 trigger: ".o_form_view.o_form_editable",
+                timeout: 20000,
                 run: function () {
                     // Assertion only.
                 },
