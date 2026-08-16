@@ -1,0 +1,429 @@
+options:
+  auto_refresh: true
+
+setup:
+  steps:
+    - step: "Get internal user group"
+      action: "ref"
+      xml_id: "base.group_user"
+      save_as: "grp_internal"
+
+    - step: "Get outsource work user group"
+      action: "ref"
+      xml_id: "ssi_outsource_work.outsource_work_user_group"
+      save_as: "grp_work_user"
+
+    - step: "Get outsource work outstanding user group"
+      action: "ref"
+      xml_id: "ssi_outsource_work.outsource_work_outstanding_user_group"
+      save_as: "grp_outstanding_user"
+
+    - step: "Get outsource work outstanding batch user group"
+      action: "ref"
+      xml_id: "ssi_outsource_work.outsource_work_outstanding_batch_user_group"
+      save_as: "grp_batch_user"
+
+    - step: "Get outsource work operating unit group"
+      action: "ref"
+      xml_id: "ssi_outsource_work_operating_unit.outsource_work_ou_group"
+      save_as: "grp_work_ou"
+
+    - step: "Get outstanding operating unit group"
+      action: "ref"
+      xml_id: "ssi_outsource_work_operating_unit.outsource_work_outstanding_ou_group"
+      save_as: "grp_outstanding_ou"
+
+    - step: "Get outstanding batch operating unit group"
+      action: "ref"
+      xml_id: "ssi_outsource_work_operating_unit.outsource_work_outstanding_batch_ou_group"
+      save_as: "grp_batch_ou"
+
+    # `setup:` replays before every scenario inside the same transaction
+    # (no rollback in between), so a fixed code or login would collide
+    # with the previous scenario's record on the 2nd and later replay.
+    # Generate a fresh, never-colliding value on each replay.
+    - step: "Create partner for operating unit A"
+      action: "create"
+      model: "res.partner"
+      save_as: "ou_a_partner"
+      values:
+        name: "Test Outsource Work OU-A Partner"
+
+    - step: "Create operating unit A"
+      action: "create"
+      model: "operating.unit"
+      save_as: "ou_a"
+      values:
+        name: "EVAL: 'Test OW OU-A %d' % env['operating.unit'].search_count([])"
+        code: "EVAL: 'OWOUA%d' % env['operating.unit'].search_count([])"
+        partner_id: "REC: ou_a_partner.id"
+
+    - step: "Create partner for operating unit B"
+      action: "create"
+      model: "res.partner"
+      save_as: "ou_b_partner"
+      values:
+        name: "Test Outsource Work OU-B Partner"
+
+    - step: "Create operating unit B"
+      action: "create"
+      model: "operating.unit"
+      save_as: "ou_b"
+      values:
+        name: "EVAL: 'Test OW OU-B %d' % env['operating.unit'].search_count([])"
+        code: "EVAL: 'OWOUB%d' % env['operating.unit'].search_count([])"
+        partner_id: "REC: ou_b_partner.id"
+
+    - step: "Create user assigned to operating unit A"
+      action: "create"
+      model: "res.users"
+      save_as: "user_a"
+      values:
+        name: "Outsource Work OU-A Rule User"
+        login: "EVAL: 'ow_ou_a_rule_user_%d' % env['res.users'].search_count([])"
+        groups_id:
+          - - 6
+            - 0
+            - - "REC: grp_internal.id"
+              - "REC: grp_work_user.id"
+              - "REC: grp_outstanding_user.id"
+              - "REC: grp_batch_user.id"
+              - "REC: grp_work_ou.id"
+              - "REC: grp_outstanding_ou.id"
+              - "REC: grp_batch_ou.id"
+        default_operating_unit_id: "REC: ou_a.id"
+        assigned_operating_unit_ids:
+          - - 6
+            - 0
+            - - "REC: ou_a.id"
+
+    - step: "Create user assigned to operating unit B"
+      action: "create"
+      model: "res.users"
+      save_as: "user_b"
+      values:
+        name: "Outsource Work OU-B Rule User"
+        login: "EVAL: 'ow_ou_b_rule_user_%d' % env['res.users'].search_count([])"
+        groups_id:
+          - - 6
+            - 0
+            - - "REC: grp_internal.id"
+              - "REC: grp_work_user.id"
+              - "REC: grp_outstanding_user.id"
+              - "REC: grp_batch_user.id"
+              - "REC: grp_work_ou.id"
+              - "REC: grp_outstanding_ou.id"
+              - "REC: grp_batch_ou.id"
+        default_operating_unit_id: "REC: ou_b.id"
+        assigned_operating_unit_ids:
+          - - 6
+            - 0
+            - - "REC: ou_b.id"
+
+    # Allowed in both operating units, but defaulting to B. Used by the
+    # propagation scenario: the record rule lets this user touch an
+    # OU-A batch, while a missing propagation would fall back to B.
+    - step: "Create user allowed in both operating units, defaulting to B"
+      action: "create"
+      model: "res.users"
+      save_as: "user_ab"
+      values:
+        name: "Outsource Work OU-AB Propagation User"
+        login: "EVAL: 'ow_ou_ab_user_%d' % env['res.users'].search_count([])"
+        groups_id:
+          - - 6
+            - 0
+            - - "REC: grp_internal.id"
+              - "REC: grp_work_user.id"
+              - "REC: grp_outstanding_user.id"
+              - "REC: grp_batch_user.id"
+              - "REC: grp_work_ou.id"
+              - "REC: grp_outstanding_ou.id"
+              - "REC: grp_batch_ou.id"
+        default_operating_unit_id: "REC: ou_b.id"
+        assigned_operating_unit_ids:
+          - - 6
+            - 0
+            - - "REC: ou_a.id"
+              - "REC: ou_b.id"
+
+    - step: "Create outsource work type category"
+      action: "create"
+      model: "outsource_work_type_category"
+      save_as: "work_type_category"
+      values:
+        name:
+          "EVAL: 'Test OW OU Category %d' %
+          env['outsource_work_type_category'].search_count([])"
+        code: "EVAL: 'OWOUCAT%d' % env['outsource_work_type_category'].search_count([])"
+
+    - step: "Search product for the outsource work type"
+      action: "search"
+      model: "product.product"
+      domain: [["sale_ok", "=", true]]
+      save_as: "product"
+      limit: 1
+
+    - step: "Create outsource work type"
+      action: "create"
+      model: "outsource_work_type"
+      save_as: "work_type"
+      values:
+        name: "EVAL: 'Test OW OU Type %d' % env['outsource_work_type'].search_count([])"
+        code: "EVAL: 'OWOUTYPE%d' % env['outsource_work_type'].search_count([])"
+        category_id: "REC: work_type_category.id"
+        product_id: "REC: product.id"
+
+    - step: "Create analytic account"
+      action: "create"
+      model: "account.analytic.account"
+      save_as: "analytic_account"
+      values:
+        name: "Test OW OU Analytic Account"
+
+    - step: "Search regular account for the work line"
+      action: "search"
+      model: "account.account"
+      domain: [["internal_type", "=", "other"]]
+      save_as: "work_account"
+      limit: 1
+
+    - step: "Search payable account for the outstanding type"
+      action: "search"
+      model: "account.account"
+      domain: [["internal_type", "=", "payable"]]
+      save_as: "payable_account"
+      limit: 1
+
+    - step: "Search journal for the outstanding type"
+      action: "search"
+      model: "account.journal"
+      domain: [["type", "in", ["purchase", "general"]]]
+      save_as: "payable_journal"
+      limit: 1
+
+    - step: "Create outsource work outstanding type"
+      action: "create"
+      model: "outsource_work_outstanding_type"
+      save_as: "outstanding_type"
+      values:
+        name:
+          "EVAL: 'Test OW OU Outstanding Type %d' %
+          env['outsource_work_outstanding_type'].search_count([])"
+        code:
+          "EVAL: 'OWOUOT%d' % env['outsource_work_outstanding_type'].search_count([])"
+        payable_journal_id: "REC: payable_journal.id"
+        payable_account_id: "REC: payable_account.id"
+
+scenarios:
+  - name: "OutsourceWork - Operating unit is stored on the document"
+    steps:
+      - step: "Create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "work_partner"
+        values:
+          name: "Test OW OU Worker"
+          is_company: false
+
+      - step: "Create outsource work with an operating unit"
+        action: "create"
+        model: "outsource_work"
+        save_as: "work"
+        values:
+          name: "/"
+          model_id: "REF: base.model_res_partner"
+          work_object_id: "REC: work_partner.id"
+          date: "2024-01-15"
+          partner_id: "REC: work_partner.id"
+          type_id: "REC: work_type.id"
+          uom_quantity: 1.0
+          price_unit: 100.0
+          currency_id: "REF: base.IDR"
+          account_id: "REC: work_account.id"
+          analytic_account_id: "REC: analytic_account.id"
+          operating_unit_id: "REF: operating_unit.main_operating_unit"
+
+      - step: "Assert outsource work operating_unit_id is set"
+        action: "assert"
+        target: "work"
+        asserts:
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "OutsourceWorkOutstanding - Operating unit is stored on the document"
+    steps:
+      - step: "Create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "outstanding_partner"
+        values:
+          name: "Test OW OU Outstanding Worker"
+          is_company: false
+
+      - step: "Create outstanding with an operating unit"
+        action: "create"
+        model: "outsource_work_outstanding"
+        save_as: "outstanding"
+        values:
+          partner_id: "REC: outstanding_partner.id"
+          type_id: "REC: outstanding_type.id"
+          date: "2024-01-31"
+          date_start: "2024-01-01"
+          date_end: "2024-01-31"
+          date_due: "2024-02-28"
+          currency_id: "REF: base.IDR"
+          payable_journal_id: "REC: payable_journal.id"
+          payable_account_id: "REC: payable_account.id"
+          operating_unit_id: "REF: operating_unit.main_operating_unit"
+
+      - step: "Assert outstanding operating_unit_id is set"
+        action: "assert"
+        target: "outstanding"
+        asserts:
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "OutsourceWorkOutstandingBatch - Operating unit is stored on the document"
+    steps:
+      - step: "Create batch with an operating unit"
+        action: "create"
+        model: "outsource_work_outstanding_batch"
+        save_as: "batch"
+        values:
+          type_id: "REC: outstanding_type.id"
+          date: "2024-01-31"
+          date_start: "2024-01-01"
+          date_end: "2024-01-31"
+          date_due: "2024-02-28"
+          currency_id: "REF: base.IDR"
+          operating_unit_id: "REF: operating_unit.main_operating_unit"
+
+      - step: "Assert batch operating_unit_id is set"
+        action: "assert"
+        target: "batch"
+        asserts:
+          operating_unit_id:
+            type: "value"
+            operator: "is_truthy"
+
+  - name: "OutsourceWorkOutstandingBatch - Operating unit reaches the outstanding"
+    steps:
+      - step: "Create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "propagation_partner"
+        values:
+          name: "Test OW OU Propagation Worker"
+          is_company: false
+
+      - step: "Create batch scoped to operating unit A"
+        action: "create"
+        model: "outsource_work_outstanding_batch"
+        save_as: "propagation_batch"
+        values:
+          type_id: "REC: outstanding_type.id"
+          date: "2024-01-31"
+          date_start: "2024-01-01"
+          date_end: "2024-01-31"
+          date_due: "2024-02-28"
+          currency_id: "REF: base.IDR"
+          operating_unit_id: "REC: ou_a.id"
+
+      - step: "Create the batch detail of that partner"
+        action: "create"
+        model: "outsource_work_outstanding_batch_detail"
+        save_as: "propagation_detail"
+        values:
+          batch_id: "REC: propagation_batch.id"
+          partner_id: "REC: propagation_partner.id"
+
+      # Run as a user whose default operating unit is B. Without the
+      # propagation the generated outstanding would fall back to B, so
+      # this scenario would pass even with no propagation at all.
+      - step: "Generate the outstanding as a user defaulting to operating unit B"
+        action: "call"
+        target: "propagation_detail"
+        method: "_create_outstanding"
+        as_user: "user_ab"
+
+      - step: "Generated outstanding carries the batch operating unit"
+        action: "assert"
+        target: "propagation_detail"
+        refresh: true
+        asserts:
+          outstanding_id.operating_unit_id:
+            type: "m2o"
+            expected: "REC: ou_a"
+
+  - name: "OutsourceWorkOutstanding - Operating unit record rule scopes access"
+    steps:
+      - step: "Create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "rule_partner"
+        values:
+          name: "Test OW OU Rule Worker"
+          is_company: false
+
+      - step: "Create outstanding of operating unit A, owned by a third user"
+        action: "create"
+        model: "outsource_work_outstanding"
+        save_as: "rule_outstanding"
+        values:
+          partner_id: "REC: rule_partner.id"
+          type_id: "REC: outstanding_type.id"
+          date: "2024-01-31"
+          date_start: "2024-01-01"
+          date_end: "2024-01-31"
+          date_due: "2024-02-28"
+          currency_id: "REF: base.IDR"
+          payable_journal_id: "REC: payable_journal.id"
+          payable_account_id: "REC: payable_account.id"
+          operating_unit_id: "REC: ou_a.id"
+          user_id: "REF: base.user_admin"
+
+      - step: "Outstanding is scoped to operating unit A"
+        action: "assert"
+        target: "rule_outstanding"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected: "REC: ou_a"
+
+      - step: "Truth gate: the document owner is neither of the two test users"
+        action: "assert"
+        target: "rule_outstanding"
+        asserts:
+          user_id:
+            type: "m2o"
+            expected_xml_id: "base.user_admin"
+
+      - step: "User of a different operating unit cannot see it"
+        action: "search"
+        model: "outsource_work_outstanding"
+        as_user: "user_b"
+        domain:
+          - ["id", "=", "REC: rule_outstanding.id"]
+        save_as: "seen_by_b"
+        expect_count: 0
+
+      - step: "User of the same operating unit can see it"
+        action: "search"
+        model: "outsource_work_outstanding"
+        as_user: "user_a"
+        domain:
+          - ["id", "=", "REC: rule_outstanding.id"]
+        save_as: "seen_by_a"
+        expect_count: 1
+
+      - step: "User of a different operating unit cannot write to it"
+        action: "write"
+        target: "rule_outstanding"
+        as_user: "user_b"
+        expect_error:
+          type: "AccessError"
+        values:
+          date_due: "2024-03-31"
