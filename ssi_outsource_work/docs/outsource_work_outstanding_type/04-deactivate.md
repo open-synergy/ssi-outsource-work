@@ -1,9 +1,16 @@
 # Deactivate Outsource Work Outstanding Type
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_type` >
-> **Menu:** Outsource Work > Configuration > Outstanding Types **Actor:** user in group
-> \_Outsource Work Outstanding Type* > **Active:** `true` → `false` > **Requires:** >
-> `01-create`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_type`
+>
+> **Menu:** Outsource Work > Configuration > Outstanding Types
+>
+> **Actor:** user in group _Outsource Work Outstanding Type_
+>
+> **Active:** `true` → `false`
+>
+> **Requires:** `01-create`
 
 ## Pre-Condition
 

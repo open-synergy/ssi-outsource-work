@@ -1,9 +1,17 @@
 # Edit Outsource Work Outstanding
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding` > **Menu:**
-> Outsource Work > Outstandings **Actor:** user in group \_Outsource Work Outstanding —
-> User* > **Requires:** `01-create` > **Inline Actions:** `action_populate` (Populate),
-> `action_clear_work` (Clear), `action_compute_tax` (Recompute Tax)
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding`
+>
+> **Menu:** Outsource Work > Outstandings
+>
+> **Actor:** user in group _Outsource Work Outstanding — User_
+>
+> **Requires:** `01-create`
+>
+> **Inline Actions:** `action_populate` (Populate), `action_clear_work` (Clear),
+> `action_compute_tax` (Recompute Tax)
 
 ## Pre-Condition
 

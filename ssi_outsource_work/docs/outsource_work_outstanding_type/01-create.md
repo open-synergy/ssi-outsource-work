@@ -1,8 +1,14 @@
 # Create Outsource Work Outstanding Type
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_type` >
-> **Menu:** Outsource Work > Configuration > Outstanding Types **Actor:** user in group
-> \_Outsource Work Outstanding Type* > **State:** `—` → `draft`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_type`
+>
+> **Menu:** Outsource Work > Configuration > Outstanding Types
+>
+> **Actor:** user in group _Outsource Work Outstanding Type_
+>
+> **State:** `—` → `draft`
 
 ## Pre-Condition
 

@@ -1,8 +1,14 @@
 # Delete Outsource Work Outstanding Type
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_type` >
-> **Menu:** Outsource Work > Configuration > Outstanding Types **Actor:** user in group
-> \_Outsource Work Outstanding Type* > **Requires:** `01-create`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_type`
+>
+> **Menu:** Outsource Work > Configuration > Outstanding Types
+>
+> **Actor:** user in group _Outsource Work Outstanding Type_
+>
+> **Requires:** `01-create`
 
 ## Pre-Condition
 

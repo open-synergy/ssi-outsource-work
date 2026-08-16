@@ -1,8 +1,16 @@
 # Restart Outsource Work Outstanding
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding` > **Menu:**
-> Outsource Work > Outstandings **Actor:** user in group \_Outsource Work Outstanding —
-> Validator* > **State:** `cancel` | `reject` → `draft` > **Requires:** `10-cancel`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding`
+>
+> **Menu:** Outsource Work > Outstandings
+>
+> **Actor:** user in group _Outsource Work Outstanding — Validator_
+>
+> **State:** `cancel` | `reject` → `draft`
+>
+> **Requires:** `10-cancel`
 
 ## Pre-Condition
 

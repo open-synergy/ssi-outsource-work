@@ -1,8 +1,16 @@
 # Activate Outsource Work Type
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_type` > **Menu:** Outsource
-> Work > Configuration > Work Types **Actor:** user in group \_Outsource Work Type* >
-> **Active:** `false` → `true` > **Requires:** `04-deactivate`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_type`
+>
+> **Menu:** Outsource Work > Configuration > Work Types
+>
+> **Actor:** user in group _Outsource Work Type_
+>
+> **Active:** `false` → `true`
+>
+> **Requires:** `04-deactivate`
 
 ## Pre-Condition
 

@@ -1,9 +1,16 @@
 # Cancel Outsource Work Outstanding
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding` > **Menu:**
-> Outsource Work > Outstandings **Actor:** user in group \_Outsource Work Outstanding —
-> Validator* > **State:** `draft` | `confirm` | `done` → `cancel` > **Requires:** >
-> `01-create`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding`
+>
+> **Menu:** Outsource Work > Outstandings
+>
+> **Actor:** user in group _Outsource Work Outstanding — Validator_
+>
+> **State:** `draft` | `confirm` | `done` → `cancel`
+>
+> **Requires:** `01-create`
 
 ## Pre-Condition
 

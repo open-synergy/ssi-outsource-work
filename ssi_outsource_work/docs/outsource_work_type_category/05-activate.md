@@ -1,9 +1,16 @@
 # Activate Outsource Work Type Category
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_type_category` > **Menu:**
-> Outsource Work > Configuration > Work Category Types **Actor:** user in group
-> \_Outsource Work Type Category* > **Active:** `false` → `true` > **Requires:** >
-> `04-deactivate`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_type_category`
+>
+> **Menu:** Outsource Work > Configuration > Work Category Types
+>
+> **Actor:** user in group _Outsource Work Type Category_
+>
+> **Active:** `false` → `true`
+>
+> **Requires:** `04-deactivate`
 
 ## Pre-Condition
 

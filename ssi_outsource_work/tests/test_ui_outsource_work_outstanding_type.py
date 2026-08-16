@@ -25,6 +25,7 @@ class TestUiOutsourceWorkOutstandingType(HttpSavepointCase):
                 "name": "TOUR Fixture Payable Account",
                 "code": "TOURPAY",
                 "user_type_id": cls.env.ref("account.data_account_type_payable").id,
+                "reconcile": True,
             }
         )
         Type = cls.env["outsource_work_outstanding_type"]

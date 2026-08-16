@@ -1,9 +1,16 @@
 # Approve Outsource Work Outstanding Batch
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_batch` >
-> **Menu:** Outsource Work > Outstanding Batches **Actor:** approver in group
-> \_Outsource Work Outstanding Batch — Validator* > **State:** `confirm` → `done` >
-> **Requires:** > `04-confirm`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_batch`
+>
+> **Menu:** Outsource Work > Outstanding Batches
+>
+> **Actor:** approver in group _Outsource Work Outstanding Batch — Validator_
+>
+> **State:** `confirm` → `done`
+>
+> **Requires:** `04-confirm`
 
 ## Pre-Condition
 

@@ -1,9 +1,16 @@
 # Create Outsource Work Outstanding Batch
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_batch` >
-> **Menu:** Outsource Work > Outstanding Batches **Actor:** user in group \_Outsource
-> Work Outstanding Batch — User* > **State:** `—` → `draft` > **Inline Actions:** >
-> `action_populate` (Populate), `action_clear` (Clear)
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_batch`
+>
+> **Menu:** Outsource Work > Outstanding Batches
+>
+> **Actor:** user in group _Outsource Work Outstanding Batch — User_
+>
+> **State:** `—` → `draft`
+>
+> **Inline Actions:** `action_populate` (Populate), `action_clear` (Clear)
 
 ## Pre-Condition
 

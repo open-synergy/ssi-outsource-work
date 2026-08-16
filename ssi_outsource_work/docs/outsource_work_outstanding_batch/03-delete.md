@@ -1,8 +1,14 @@
 # Delete Outsource Work Outstanding Batch
 
-> **Module:** ssi*outsource_work **Model:** `outsource_work_outstanding_batch` >
-> **Menu:** Outsource Work > Outstanding Batches **Actor:** user in group \_Outsource
-> Work Outstanding Batch — User* > **Requires:** `01-create`
+> **Module:** ssi_outsource_work
+>
+> **Model:** `outsource_work_outstanding_batch`
+>
+> **Menu:** Outsource Work > Outstanding Batches
+>
+> **Actor:** user in group _Outsource Work Outstanding Batch — User_
+>
+> **Requires:** `01-create`
 
 ## Pre-Condition
 

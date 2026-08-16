@@ -51,6 +51,7 @@ class TestUiOutsourceWorkOutstanding(HttpSavepointCase):
                     "date_due": "2026-01-31",
                     "date_start": "2026-01-01",
                     "date_end": "2026-01-31",
+                    "currency_id": cls.env.ref("base.IDR").id,
                     "payable_journal_id": journal.id,
                     "payable_account_id": payable_account.id,
                 }
