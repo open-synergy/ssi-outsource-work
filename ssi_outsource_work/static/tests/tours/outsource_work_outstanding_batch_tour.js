@@ -175,6 +175,21 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
             },
 
             // Flow 3 — Click Populate / Clear on the Outstandings tab
+            //
+            // Each type="object" button click makes Odoo commitChanges() on
+            // the CURRENT widget tree first (to flush any pending edits)
+            // before its own RPC starts. Both _populate() and
+            // _unlink_detail() (see outsource_work_outstanding_batch.py)
+            // unlink/create detail_ids records directly, tearing down and
+            // rebuilding that field's list widget each time. If the NEXT
+            // button is clicked before the widget has finished rebuilding,
+            // the click's own commitChanges() call hits a stale/destroyed
+            // widget slot in the renderer and throws
+            // "Cannot read properties of null (reading 'commitChanges')",
+            // leaving the form stuck (observed on the equivalent tax_ids
+            // widget in outsource_work_outstanding's edit tour). So each
+            // button gets its own dedicated settle wait before the next one
+            // is clicked, not just once at the end.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -185,6 +200,13 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
                 run: function () {
                     // Assertion only: Odoo disables the button synchronously
                     // while the RPC cycle of a type="object" button runs.
+                },
+            },
+            {
+                content: "Outstanding Details widget has re-rendered after Populate",
+                trigger: ".o_form_view [name='detail_ids'] .o_list_view",
+                run: function () {
+                    // Assertion only.
                 },
             },
             {
@@ -199,18 +221,7 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
                 },
             },
             {
-                // Populate/Clear create and unlink detail_ids one2many
-                // records on THIS record directly (not just a foreign-key
-                // toggle on other records), which tears down and rebuilds
-                // the detail_ids list widget itself. The button's own
-                // :enabled gate above only proves the RPC round-trip
-                // finished, not that this widget rebuild has — wait for
-                // its inline <tree> DOM to be back in place before
-                // touching the form again (see commitChanges() race
-                // below; this widget is the batch equivalent of tax_ids
-                // on outsource_work_outstanding, where the same race was
-                // observed).
-                content: "Outstanding Details widget has re-rendered",
+                content: "Outstanding Details widget has re-rendered after Clear",
                 trigger: ".o_form_view [name='detail_ids'] .o_list_view",
                 run: function () {
                     // Assertion only.

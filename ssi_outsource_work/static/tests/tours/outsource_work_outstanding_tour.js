@@ -195,6 +195,21 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
 
             // Flow 3 — Click Populate / Clear / Recompute Tax on the Works tab
+            //
+            // Each type="object" button click makes Odoo commitChanges() on
+            // the CURRENT widget tree first (to flush any pending edits)
+            // before its own RPC starts. _populate() and _clear_work() (see
+            // outsource_work_outstanding.py) both write on work_ids's
+            // underlying records, and _recompute_tax() unlinks+recreates
+            // tax_ids directly — each one tears down and rebuilds that
+            // field's list widget. If the NEXT button in this sequence is
+            // clicked before that specific widget has finished rebuilding,
+            // the click's own commitChanges() call hits a stale/destroyed
+            // widget slot in the renderer and throws
+            // "Cannot read properties of null (reading 'commitChanges')",
+            // leaving the form stuck. So every button gets its OWN
+            // dedicated settle wait — on the field IT rebuilds — before the
+            // next button is clicked, not just once at the end.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -208,12 +223,26 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
+                content: "Works list widget has re-rendered after Populate",
+                trigger: ".o_form_view [name='work_ids'] .o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
                 content: "Click Clear",
                 trigger: ".o_form_view button[name='action_clear_work']",
             },
             {
                 content: "Clear finished",
                 trigger: ".o_form_view button[name='action_clear_work']:enabled",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Works list widget has re-rendered after Clear",
+                trigger: ".o_form_view [name='work_ids'] .o_list_view",
                 run: function () {
                     // Assertion only.
                 },
@@ -230,14 +259,6 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                // Action_compute_tax unlinks and recreates the tax_ids
-                // one2many records on THIS record (not just a foreign-key
-                // toggle on other records like Populate/Clear), which tears
-                // down and rebuilds the tax_ids list widget itself. The
-                // button's own :enabled gate above only proves the RPC
-                // round-trip finished, not that this widget rebuild has —
-                // wait for its inline <tree> DOM to be back in place before
-                // touching the form again (see commitChanges() race below).
                 content: "Tax lines widget has re-rendered",
                 trigger: ".o_form_view [name='tax_ids'] .o_list_view",
                 run: function () {
