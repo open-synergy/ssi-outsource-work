@@ -8,10 +8,21 @@ from odoo import api, fields, models
 
 
 class MixinOutsourceWorkObject(models.AbstractModel):
+    """
+    Adds an Outsource Work tab to a document's form view.
+
+    Inheriting models get an ``outsource_work_ids`` one2many and the tab
+    insertion logic in ``fields_view_get``. Every class attribute the
+    insertion logic reads (``_outsource_work_create_page``,
+    ``_work_log_page_xpath``, ``_work_log_template_position``) is declared
+    here with a safe default, so a model that does not override any of
+    them can still open its form without raising ``AttributeError``.
+    """
+
     _name = "mixin.outsource_work_object"
     _description = "Outsource Work Object Mixin"
 
-    _work_log_create_page = False
+    _outsource_work_create_page = False
     _work_log_page_xpath = "//page[1]"
     _work_log_template_position = "before"
 
