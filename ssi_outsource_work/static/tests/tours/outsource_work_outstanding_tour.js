@@ -294,6 +294,24 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
+                // Tax_ids lives on the Accounting tab, which is NOT the
+                // active tab at this point (Works is). Recompute Tax
+                // unlinks+recreates tax_ids's list widget while its tab
+                // pane is hidden — switch to Accounting first so the
+                // widget rebuilds while actually mounted/visible, instead
+                // of behind a display:none tab pane.
+                content: "Switch to the Accounting tab before Recompute Tax",
+                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
+                run: "click",
+            },
+            {
+                content: "Accounting tab is active before Recompute Tax",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
                 content: "Click Recompute Tax",
                 trigger: ".o_form_view button[name='action_compute_tax']",
             },
