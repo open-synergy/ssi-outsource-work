@@ -229,6 +229,21 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                     // Assertion only.
                 },
             },
+            {
+                // Action_compute_tax unlinks and recreates the tax_ids
+                // one2many records on THIS record (not just a foreign-key
+                // toggle on other records like Populate/Clear), which tears
+                // down and rebuilds the tax_ids list widget itself. The
+                // button's own :enabled gate above only proves the RPC
+                // round-trip finished, not that this widget rebuild has —
+                // wait for its inline <tree> DOM to be back in place before
+                // touching the form again (see commitChanges() race below).
+                content: "Tax lines widget has re-rendered",
+                trigger: ".o_form_view [name='tax_ids'] .o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
 
             // Flow 4 — Change the required fields
             // The inline actions above are type="object" buttons that
