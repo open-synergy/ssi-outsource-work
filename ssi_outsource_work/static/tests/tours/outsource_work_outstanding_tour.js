@@ -196,26 +196,12 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
 
             // Flow 3 — Click Populate / Clear / Recompute Tax on the Works tab
             //
-            // Each type="object" button click makes Odoo commitChanges() on
-            // the CURRENT widget tree first (to flush any pending edits)
-            // before its own RPC starts. _populate() and _clear_work() (see
-            // outsource_work_outstanding.py) both write on work_ids's
-            // underlying records, and _recompute_tax() unlinks+recreates
-            // tax_ids directly — each one tears down and rebuilds that
-            // field's list widget. If the NEXT button in this sequence is
-            // clicked before that specific widget has finished rebuilding,
-            // the click's own commitChanges() call hits a stale/destroyed
-            // widget slot in the renderer and throws
-            // "Cannot read properties of null (reading 'commitChanges')".
-            // The button's own :enabled gate proves its RPC round-trip is
-            // done, but not that the re-render it triggers has finished —
-            // so a real navigation gap (switching to the Accounting tab
-            // and back) is inserted after every button, the same kind of
-            // natural pacing that already protects
-            // ssi_hr_payroll_hr_payslip_edit's own reload buttons, which
-            // sit on different tabs and are separated by real tab
-            // switches. Our three buttons live on one tab, so that pacing
-            // has to be added explicitly.
+            // Each button's own :enabled gate is sufficient: Odoo disables
+            // a type="object" button synchronously when clicked and only
+            // re-enables it in form_renderer.js after its whole save + RPC
+            // + reload cycle — including the re-render of any x2many widget
+            // the method touches (work_ids/tax_ids) — has completed. See
+            // odoo-development-ui-test skill, patterns.md §M.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -226,30 +212,6 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 run: function () {
                     // Assertion only: Odoo disables the button synchronously
                     // while the RPC cycle of a type="object" button runs.
-                },
-            },
-            {
-                content: "Switch to the Accounting tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
-                run: "click",
-            },
-            {
-                content: "Accounting tab is active",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch back to the Works tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Works)",
-                run: "click",
-            },
-            {
-                content: "Works tab is active again",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
-                run: function () {
-                    // Assertion only.
                 },
             },
             {
@@ -264,60 +226,12 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                content: "Switch to the Accounting tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
-                run: "click",
-            },
-            {
-                content: "Accounting tab is active",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch back to the Works tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Works)",
-                run: "click",
-            },
-            {
-                content: "Works tab is active again",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
                 content: "Click Recompute Tax",
                 trigger: ".o_form_view button[name='action_compute_tax']",
             },
             {
                 content: "Recompute Tax finished",
                 trigger: ".o_form_view button[name='action_compute_tax']:enabled",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch to the Accounting tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
-                run: "click",
-            },
-            {
-                content: "Accounting tab is active",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch back to the Works tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Works)",
-                run: "click",
-            },
-            {
-                content: "Works tab is active again",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
                 run: function () {
                     // Assertion only.
                 },

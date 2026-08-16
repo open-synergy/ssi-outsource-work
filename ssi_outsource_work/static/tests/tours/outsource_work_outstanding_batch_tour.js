@@ -176,25 +176,12 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
 
             // Flow 3 — Click Populate / Clear on the Outstandings tab
             //
-            // Each type="object" button click makes Odoo commitChanges() on
-            // the CURRENT widget tree first (to flush any pending edits)
-            // before its own RPC starts. Both _populate() and
-            // _unlink_detail() (see outsource_work_outstanding_batch.py)
-            // unlink/create detail_ids records directly, tearing down and
-            // rebuilding that field's list widget each time. If the NEXT
-            // button is clicked before the widget has finished rebuilding,
-            // the click's own commitChanges() call hits a stale/destroyed
-            // widget slot in the renderer and throws
-            // "Cannot read properties of null (reading 'commitChanges')".
-            // The button's own :enabled gate proves its RPC round-trip is
-            // done, but not that the re-render it triggers has finished —
-            // so a real navigation gap (switching to the Note tab, from
-            // mixin.transaction's base form, and back) is inserted after
-            // every button, the same kind of natural pacing that already
-            // protects ssi_hr_payroll_hr_payslip_edit's own reload
-            // buttons, which sit on different tabs and are separated by
-            // real tab switches. Our two buttons live on one tab, so that
-            // pacing has to be added explicitly.
+            // Each button's own :enabled gate is sufficient: Odoo disables
+            // a type="object" button synchronously when clicked and only
+            // re-enables it in form_renderer.js after its whole save + RPC
+            // + reload cycle — including the re-render of any x2many widget
+            // the method touches (detail_ids) — has completed. See
+            // odoo-development-ui-test skill, patterns.md §M.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -208,60 +195,12 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
                 },
             },
             {
-                content: "Switch to the Note tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Note)",
-                run: "click",
-            },
-            {
-                content: "Note tab is active",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Note)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch back to the Outstandings tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Outstandings)",
-                run: "click",
-            },
-            {
-                content: "Outstandings tab is active again",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Outstandings)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
                 content: "Click Clear",
                 trigger: ".o_form_view button[name='action_clear']",
             },
             {
                 content: "Clear finished",
                 trigger: ".o_form_view button[name='action_clear']:enabled",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch to the Note tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Note)",
-                run: "click",
-            },
-            {
-                content: "Note tab is active",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Note)",
-                run: function () {
-                    // Assertion only.
-                },
-            },
-            {
-                content: "Switch back to the Outstandings tab",
-                trigger: ".o_notebook_headers .nav-link:contains(Outstandings)",
-                run: "click",
-            },
-            {
-                content: "Outstandings tab is active again",
-                trigger: ".o_notebook_headers .nav-link.active:contains(Outstandings)",
                 run: function () {
                     // Assertion only.
                 },
