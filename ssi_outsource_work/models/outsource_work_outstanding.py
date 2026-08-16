@@ -300,6 +300,7 @@ class OutsourceWorkOutstanding(models.Model):
             ("confirm", "Waiting for Approval"),
             ("done", "Done"),
             ("cancel", "Cancelled"),
+            ("reject", "Rejected"),
         ],
         copy=False,
         default="draft",

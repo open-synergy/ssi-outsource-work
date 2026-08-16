@@ -39,26 +39,29 @@ class TestUiOutsourceWorkOutstanding(HttpSavepointCase):
             }
         )
 
-        def _create_outstanding(name):
+        def _create_outstanding(name, **overrides):
             """Create a draft outstanding owned by the admin tour user."""
-            return cls.env["outsource_work_outstanding"].create(
-                {
-                    "name": name,
-                    "user_id": cls.admin.id,
-                    "partner_id": cls.partner.id,
-                    "type_id": cls.outstanding_type.id,
-                    "date": "2026-01-15",
-                    "date_due": "2026-01-31",
-                    "date_start": "2026-01-01",
-                    "date_end": "2026-01-31",
-                    "currency_id": cls.env.ref("base.IDR").id,
-                    "payable_journal_id": journal.id,
-                    "payable_account_id": payable_account.id,
-                }
-            )
+            vals = {
+                "name": name,
+                "user_id": cls.admin.id,
+                "partner_id": cls.partner.id,
+                "type_id": cls.outstanding_type.id,
+                "date": "2026-01-15",
+                "date_due": "2026-01-31",
+                "date_start": "2026-01-01",
+                "date_end": "2026-01-31",
+                "currency_id": cls.env.ref("base.IDR").id,
+                "payable_journal_id": journal.id,
+                "payable_account_id": payable_account.id,
+            }
+            vals.update(overrides)
+            return cls.env["outsource_work_outstanding"].create(vals)
 
         cls.outstanding_edit = _create_outstanding("TOUR-OWO-EDIT")
-        cls.outstanding_delete = _create_outstanding("TOUR-OWO-DELETE")
+        # name is left at its default "/": mixin.transaction's unlink()
+        # only allows deleting a record whose document number is still "/".
+        # The row is found in the tour by its distinctive Date instead.
+        cls.outstanding_delete = _create_outstanding("/", date="2026-03-03")
         cls.outstanding_confirm = _create_outstanding("TOUR-OWO-CONFIRM")
         cls.outstanding_approve = _create_outstanding("TOUR-OWO-APPROVE")
         cls.outstanding_approve.action_confirm()

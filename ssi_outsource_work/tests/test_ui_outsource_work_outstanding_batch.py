@@ -37,23 +37,26 @@ class TestUiOutsourceWorkOutstandingBatch(HttpSavepointCase):
             }
         )
 
-        def _create_batch(name):
+        def _create_batch(name, **overrides):
             """Create a draft batch owned by the admin tour user."""
-            return cls.env["outsource_work_outstanding_batch"].create(
-                {
-                    "name": name,
-                    "user_id": cls.admin.id,
-                    "type_id": cls.outstanding_type.id,
-                    "date": "2026-01-15",
-                    "date_due": "2026-01-31",
-                    "date_start": "2026-01-01",
-                    "date_end": "2026-01-31",
-                    "currency_id": cls.env.ref("base.IDR").id,
-                }
-            )
+            vals = {
+                "name": name,
+                "user_id": cls.admin.id,
+                "type_id": cls.outstanding_type.id,
+                "date": "2026-01-15",
+                "date_due": "2026-01-31",
+                "date_start": "2026-01-01",
+                "date_end": "2026-01-31",
+                "currency_id": cls.env.ref("base.IDR").id,
+            }
+            vals.update(overrides)
+            return cls.env["outsource_work_outstanding_batch"].create(vals)
 
         cls.batch_edit = _create_batch("TOUR-OWB-EDIT")
-        cls.batch_delete = _create_batch("TOUR-OWB-DELETE")
+        # name is left at its default "/": mixin.transaction's unlink()
+        # only allows deleting a record whose document number is still "/".
+        # The row is found in the tour by its distinctive Date instead.
+        cls.batch_delete = _create_batch("/", date="2026-04-04")
         cls.batch_confirm = _create_batch("TOUR-OWB-CONFIRM")
         cls.batch_approve = _create_batch("TOUR-OWB-APPROVE")
         cls.batch_approve.action_confirm()

@@ -241,6 +241,17 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 extra_trigger: ".o_form_view.o_form_editable",
                 run: "text 02/28/2026",
             },
+            {
+                // Blur the Date Due input by clicking a neutral, inert
+                // element (the active breadcrumb item has no click handler)
+                // before Save — clicking Save while the field widget is
+                // still mid-commit from the change above raced with the
+                // widget's own commitChanges() and left the form stuck in
+                // edit mode.
+                content: "Commit the Date Due change",
+                trigger: ".breadcrumb-item.active",
+                run: "click",
+            },
 
             // Flow 5 — Click Save
             {
@@ -292,7 +303,7 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             // Flow 2 — Open the record to delete
             {
                 content: "Open the record",
-                trigger: ".o_data_row:contains(TOUR-OWO-DELETE) .o_data_cell:first",
+                trigger: ".o_data_row:contains(03/03/2026) .o_data_cell:first",
                 extra_trigger: ".o_list_view",
             },
             {
@@ -345,8 +356,7 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
             {
                 content: "Record no longer appears in the list",
-                trigger:
-                    ".o_list_view:not(:has(.o_data_row:contains(TOUR-OWO-DELETE)))",
+                trigger: ".o_list_view:not(:has(.o_data_row:contains(03/03/2026)))",
                 run: function () {
                     // Assertion only.
                 },
