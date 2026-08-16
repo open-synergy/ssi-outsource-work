@@ -206,22 +206,16 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             // clicked before that specific widget has finished rebuilding,
             // the click's own commitChanges() call hits a stale/destroyed
             // widget slot in the renderer and throws
-            // "Cannot read properties of null (reading 'commitChanges')",
-            // leaving the form stuck. So every button gets its own
-            // dedicated settle wait before the next one is clicked, not
-            // just once at the end.
-            //
-            // The settle wait always targets work_ids, never tax_ids: a
-            // trigger must be VISIBLE to satisfy a tour step, and tax_ids
-            // lives on the "Accounting" tab, which is not the active
-            // notebook page (the "Works" tab, holding work_ids, is
-            // inserted first and is active by default — see
-            // outsource_work_outstanding_views.xml). A FormRenderer
-            // re-render always rebuilds every field widget in the same
-            // pass regardless of which tab it lives on, so waiting on the
-            // visible work_ids list is an equally valid — and, unlike
-            // tax_ids, actually satisfiable — signal that the render
-            // triggered by Recompute Tax has finished too.
+            // "Cannot read properties of null (reading 'commitChanges')".
+            // The button's own :enabled gate proves its RPC round-trip is
+            // done, but not that the re-render it triggers has finished —
+            // so a real navigation gap (switching to the Accounting tab
+            // and back) is inserted after every button, the same kind of
+            // natural pacing that already protects
+            // ssi_hr_payroll_hr_payslip_edit's own reload buttons, which
+            // sit on different tabs and are separated by real tab
+            // switches. Our three buttons live on one tab, so that pacing
+            // has to be added explicitly.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -235,8 +229,25 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                content: "Works list widget has re-rendered after Populate",
-                trigger: ".o_form_view [name='work_ids'] .o_list_view",
+                content: "Switch to the Accounting tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
+                run: "click",
+            },
+            {
+                content: "Accounting tab is active",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Switch back to the Works tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Works)",
+                run: "click",
+            },
+            {
+                content: "Works tab is active again",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
                 run: function () {
                     // Assertion only.
                 },
@@ -253,8 +264,25 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                content: "Works list widget has re-rendered after Clear",
-                trigger: ".o_form_view [name='work_ids'] .o_list_view",
+                content: "Switch to the Accounting tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
+                run: "click",
+            },
+            {
+                content: "Accounting tab is active",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Switch back to the Works tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Works)",
+                run: "click",
+            },
+            {
+                content: "Works tab is active again",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
                 run: function () {
                     // Assertion only.
                 },
@@ -271,8 +299,25 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                content: "Works list widget has re-rendered after Recompute Tax",
-                trigger: ".o_form_view [name='work_ids'] .o_list_view",
+                content: "Switch to the Accounting tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Accounting)",
+                run: "click",
+            },
+            {
+                content: "Accounting tab is active",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Accounting)",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Switch back to the Works tab",
+                trigger: ".o_notebook_headers .nav-link:contains(Works)",
+                run: "click",
+            },
+            {
+                content: "Works tab is active again",
+                trigger: ".o_notebook_headers .nav-link.active:contains(Works)",
                 run: function () {
                     // Assertion only.
                 },
@@ -329,6 +374,7 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             {
                 content: "Save the record",
                 trigger: ".o_form_button_save",
+                extra_trigger: "body:not(:has(.modal))",
             },
 
             // Post-Condition — The record is updated with the new values
