@@ -1421,6 +1421,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__rejected
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__rejected
 #: model:ir.model.fields.selection,name:ssi_outsource_work.selection__outsource_work__state__reject
+#: model:ir.model.fields.selection,name:ssi_outsource_work.selection__outsource_work_outstanding__state__reject
+#: model:ir.model.fields.selection,name:ssi_outsource_work.selection__outsource_work_outstanding_batch__state__reject
 msgid "Rejected"
 msgstr ""
 
