@@ -7,6 +7,14 @@ from odoo import fields, models
 
 
 class OutsourceWorkOutstandingBatchDetail(models.Model):
+    """
+    Represents one partner's outstanding within a batch.
+
+    Child of ``outsource_work_outstanding_batch``: one detail per
+    partner found while populating the batch, each owning exactly one
+    ``outsource_work_outstanding`` it creates and populates.
+    """
+
     _name = "outsource_work_outstanding_batch_detail"
     _description = "Outsource Work Outstanding Batch Detail"
 
@@ -28,6 +36,12 @@ class OutsourceWorkOutstandingBatchDetail(models.Model):
     )
 
     def _create_outstanding(self):
+        """Create, populate, and tax this detail's outstanding.
+
+        Creates an ``outsource_work_outstanding`` from
+        ``_prepare_outstanding_data``, links it via ``outstanding_id``,
+        then populates and computes its taxes.
+        """
         self.ensure_one()
         Outstanding = self.env["outsource_work_outstanding"]
         outstanding = Outstanding.create(self._prepare_outstanding_data())
@@ -40,6 +54,13 @@ class OutsourceWorkOutstandingBatchDetail(models.Model):
         outstanding.action_compute_tax()
 
     def _prepare_outstanding_data(self):
+        """Build the ``outsource_work_outstanding`` values.
+
+        Copies the parent batch's type, currency, and dates onto the
+        new outstanding for this detail's ``partner_id``.
+
+        :return: dict of ``outsource_work_outstanding`` values
+        """
         self.ensure_one()
         batch = self.batch_id
         return {

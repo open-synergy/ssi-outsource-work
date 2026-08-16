@@ -11,7 +11,21 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 
 
 class CustomerPortal(CustomerPortal):
+    """
+    Adds outsource work counters and page routes to the customer portal.
+    Extends the portal home page and registers the ``/my`` routes that
+    list a partner's outsource work documents and their outstandings.
+    """
+
     def _prepare_home_portal_values(self, counters):
+        """Add outsource work counters to the portal home values.
+
+        :param counters: iterable of counter keys requested by the
+            portal home page
+        :return: dict of portal home values, with
+            ``outsource_work_outstanding_count`` and
+            ``outsource_work_count`` added when requested
+        """
         values = super()._prepare_home_portal_values(counters)
         if "outsource_work_outstanding_count" in counters:
             values["outsource_work_outstanding_count"] = (
@@ -34,6 +48,13 @@ class CustomerPortal(CustomerPortal):
     def _outsource_work_outstanding_get_page_view_values(
         self, outsource_work_outstanding, access_token, **kwargs
     ):
+        """Build the page values for a single outstanding portal page.
+
+        :param outsource_work_outstanding: the ``outsource_work_outstanding``
+            record being rendered
+        :param access_token: portal access token for the record
+        :return: dict of values for the outstanding detail template
+        """
         values = {
             "page_name": "outsource-work-outstandings",
             "outsource_work_outstanding": outsource_work_outstanding,
@@ -59,6 +80,15 @@ class CustomerPortal(CustomerPortal):
     def portal_my_outsource_work_outstandings(
         self, page=1, date_begin=None, date_end=None, sortby=None, **kw
     ):
+        """Render the portal list page of the current user's outstandings.
+
+        :param page: page number for the pager
+        :param date_begin: lower bound filter on ``create_date``
+        :param date_end: upper bound filter on ``create_date``
+        :param sortby: sort key, one of the ``searchbar_sortings`` keys
+        :return: rendered response for
+            ``ssi_outsource_work.portal_my_outsource_work_outstandings``
+        """
         values = self._prepare_portal_layout_values()
         Outstanding = request.env["outsource_work_outstanding"]
         domain = []
@@ -121,6 +151,14 @@ class CustomerPortal(CustomerPortal):
     def portal_my_outsource_work_outstanding(
         self, outstanding_id=None, access_token=None, **kw
     ):
+        """Render the portal detail page of a single outstanding.
+
+        :param outstanding_id: id of the ``outsource_work_outstanding``
+            record to display
+        :param access_token: portal access token for the record
+        :return: rendered response, or redirect to ``/my`` when access
+            is denied or the record is missing
+        """
         try:
             outsource_work_outstanding_sudo = self._document_check_access(
                 "outsource_work_outstanding", outstanding_id, access_token
@@ -139,6 +177,13 @@ class CustomerPortal(CustomerPortal):
     def _outsource_work_get_page_view_values(
         self, outsource_work, access_token, **kwargs
     ):
+        """Build the page values for a single outsource work portal page.
+
+        :param outsource_work: the ``outsource_work`` record being
+            rendered
+        :param access_token: portal access token for the record
+        :return: dict of values for the outsource work detail template
+        """
         values = {
             "page_name": "outsource-works",
             "outsource_work": outsource_work,
@@ -164,6 +209,15 @@ class CustomerPortal(CustomerPortal):
     def portal_my_outsource_works(
         self, page=1, date_begin=None, date_end=None, sortby=None, **kw
     ):
+        """Render the portal list page of the current user's outsource work.
+
+        :param page: page number for the pager
+        :param date_begin: lower bound filter on ``create_date``
+        :param date_end: upper bound filter on ``create_date``
+        :param sortby: sort key, one of the ``searchbar_sortings`` keys
+        :return: rendered response for
+            ``ssi_outsource_work.portal_my_outsource_works``
+        """
         values = self._prepare_portal_layout_values()
         OutsourceWork = request.env["outsource_work"]
         domain = []
@@ -220,6 +274,14 @@ class CustomerPortal(CustomerPortal):
         website=True,
     )
     def portal_my_outsource_work(self, outsource_work_id=None, access_token=None, **kw):
+        """Render the portal detail page of a single outsource work.
+
+        :param outsource_work_id: id of the ``outsource_work`` record to
+            display
+        :param access_token: portal access token for the record
+        :return: rendered response, or redirect to ``/my`` when access
+            is denied or the record is missing
+        """
         try:
             outsource_work_sudo = self._document_check_access(
                 "outsource_work", outsource_work_id, access_token

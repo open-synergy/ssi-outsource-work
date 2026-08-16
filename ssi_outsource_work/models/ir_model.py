@@ -6,6 +6,15 @@ from odoo import fields, models
 
 
 class IrModel(models.Model):
+    """
+    Adds outsource work m2o-configurator fields to ``ir.model``.
+
+    Lets a model declare, per document type, how its allowed analytic
+    accounts, pricelists, and usages for outsource work are selected
+    (fixed list or Python code), so ``outsource_work`` records created
+    against it can filter these values consistently.
+    """
+
     _name = "ir.model"
     _inherit = "ir.model"
 

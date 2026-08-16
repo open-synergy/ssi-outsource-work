@@ -7,6 +7,13 @@ from odoo import fields, models
 
 
 class OutsourceWorkType(models.Model):
+    """
+    Master data type for ``outsource_work`` documents.
+
+    Links a category and the product an outsource work of this type
+    is priced and invoiced against.
+    """
+
     _name = "outsource_work_type"
     _inherit = ["mixin.master_data"]
     _description = "Outsource Work Type"

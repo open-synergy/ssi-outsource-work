@@ -10,6 +10,16 @@ from odoo.addons.ssi_decorator import ssi_decorator
 
 
 class OutsourceWork(models.Model):
+    """
+    Represents a single outsource work log against a source document.
+
+    Tracks one outsourced product/service line (analytic account,
+    pricelist, usage, price) attached to an arbitrary document via
+    ``model_id``/``work_object_id``, from ``draft`` through the
+    approval workflow to ``done``, where it is settled into an
+    ``outsource_work_outstanding``.
+    """
+
     _name = "outsource_work"
     _inherit = [
         "mixin.transaction_cancel",
@@ -62,6 +72,12 @@ class OutsourceWork(models.Model):
 
     @api.model
     def _default_model_id(self):
+        """Resolve the default ``model_id`` from the creation context.
+
+        :return: the ``ir.model`` matching context key
+            ``outsource_work_model``, or an empty recordset when the
+            context key is not set
+        """
         model = False
         obj_ir_model = self.env["ir.model"]
         model_name = self.env.context.get("outsource_work_model", False)
@@ -101,6 +117,11 @@ class OutsourceWork(models.Model):
         "work_object_id",
     )
     def _compute_work_object_reference(self):
+        """Build the ``Reference`` field pointing to the source document.
+
+        Combines ``model_name`` and ``work_object_id`` into the
+        ``"<model>,<id>"`` string ``fields.Reference`` expects.
+        """
         for document in self:
             result = False
             if document.model_id and document.work_object_id:
@@ -116,6 +137,10 @@ class OutsourceWork(models.Model):
 
     @api.model
     def _default_date(self):
+        """Return today's date as the default value of ``date``.
+
+        :return: today's date
+        """
         return fields.Date.today()
 
     date = fields.Date(
@@ -166,6 +191,13 @@ class OutsourceWork(models.Model):
         "model_id",
     )
     def _compute_allowed_analytic_account_ids(self):
+        """Compute the analytic accounts allowed for this document.
+
+        Resolved from ``model_id``'s configurator: either the fixed
+        list ``outsource_work_aa_ids``, or the accounts returned by
+        ``outsource_work_python_code`` when the selection method is
+        ``python``.
+        """
         for document in self:
             result = []
             if document.model_id:
@@ -195,6 +227,13 @@ class OutsourceWork(models.Model):
         "model_id",
     )
     def _compute_allowed_usage_ids(self):
+        """Compute the usage types allowed for this document.
+
+        Resolved from ``model_id``'s configurator: either the fixed
+        list ``outsource_work_usage_ids``, or the usages returned by
+        ``outsource_work_usage_python_code`` when the selection method
+        is ``python``.
+        """
         Usage = self.env["product.usage_type"]
         for document in self:
             result = []
@@ -269,6 +308,14 @@ class OutsourceWork(models.Model):
         "currency_id",
     )
     def _compute_allowed_pricelist_ids(self):
+        """Compute the pricelists allowed for this document.
+
+        Resolved from ``model_id``'s configurator: either the fixed
+        list ``outsource_work_pricelist_ids``, or the pricelists
+        returned by ``outsource_work_pricelist_python_code`` when the
+        selection method is ``python``; further filtered to
+        ``document.currency_id``.
+        """
         Pricelist = self.env["product.pricelist"]
         for document in self:
             result = []
@@ -306,6 +353,14 @@ class OutsourceWork(models.Model):
         return res
 
     def _get_localdict(self):
+        """Build the localdict used to evaluate configurator Python code.
+
+        :return: dict with ``env`` (the Odoo environment) and
+            ``document`` (the source document browsed from
+            ``model_name``/``work_object_id``), available to
+            ``safe_eval`` when evaluating ``outsource_work_python_code``
+            and its variants
+        """
         self.ensure_one()
         object = self.env[self.model_name]
         document = object.browse(self.work_object_id)
@@ -315,6 +370,14 @@ class OutsourceWork(models.Model):
         }
 
     def _evaluate_analytic_account(self, model):
+        """Evaluate ``model.outsource_work_python_code`` for this work.
+
+        :param model: the ``ir.model`` record whose Python code is
+            evaluated
+        :return: the list of analytic account ids the code assigns to
+            ``result``, or ``False`` if it does not set ``result``
+        :raises UserError: when evaluating the Python code raises
+        """
         self.ensure_one()
         res = False
         localdict = self._get_localdict()
@@ -330,6 +393,14 @@ class OutsourceWork(models.Model):
         return res
 
     def _evaluate_worklog_usage(self, model):
+        """Evaluate ``model.outsource_work_usage_python_code``.
+
+        :param model: the ``ir.model`` record whose Python code is
+            evaluated
+        :return: the list of usage type ids the code assigns to
+            ``result``, or ``False`` if it does not set ``result``
+        :raises UserError: when evaluating the Python code raises
+        """
         self.ensure_one()
         res = False
         localdict = self._get_localdict()
@@ -351,12 +422,22 @@ class OutsourceWork(models.Model):
         "product_id",
     )
     def onchange_name(self):
-        pass
+        """Placeholder onchange kept for naming symmetry with ``name``.
+
+        Intentionally does nothing; ``product_id`` changes do not
+        require recomputing any other field on this model.
+        """
 
     @api.onchange(
         "model_id",
     )
     def onchange_analytic_account_id(self):
+        """Default ``analytic_account_id`` when ``model_id`` changes.
+
+        Resets the field, then defaults it to the first allowed
+        analytic account when the newly recomputed
+        ``allowed_analytic_account_ids`` is not empty.
+        """
         self.analytic_account_id = False
         if len(self.allowed_analytic_account_ids) > 0:
             self.analytic_account_id = self.allowed_analytic_account_ids[0]._origin.id
@@ -372,6 +453,11 @@ class OutsourceWork(models.Model):
             self.usage_id = usage_type_id.id
 
     def _create_aml(self):
+        """Create the ``account.move.line`` for this outsource work.
+
+        Builds the line from ``_prepare_aml_data`` and stores its id
+        back on ``account_move_line_id``.
+        """
         self.ensure_one()
         AML = self.env["account.move.line"]
         aml = AML.with_context(check_move_validity=False).create(
@@ -384,6 +470,14 @@ class OutsourceWork(models.Model):
         )
 
     def _prepare_aml_data(self):
+        """Build the ``account.move.line`` values for this work.
+
+        Extension point: override to add analytic/operating unit
+        fields without touching ``_create_aml``.
+
+        :return: dict of ``account.move.line`` values, posted on the
+            outstanding's ``move_id``
+        """
         self.ensure_one()
         outstanding = self.outstanding_id
         aa_id = self.analytic_account_id and self.analytic_account_id.id or False
@@ -405,6 +499,15 @@ class OutsourceWork(models.Model):
         }
 
     def _get_aml_amount(self, currency):
+        """Compute the debit/credit/amount_currency for the AML.
+
+        Converts ``price_subtotal`` into ``currency`` (the outstanding's
+        currency) as of the outstanding's date, then splits it into a
+        debit or a credit depending on its sign.
+
+        :param currency: currency to convert ``price_subtotal`` into
+        :return: tuple ``(debit, credit, amount_currency)``
+        """
         self.ensure_one()
         debit = credit = amount = amount_currency = 0.0
         outstanding = self.outstanding_id
@@ -425,6 +528,13 @@ class OutsourceWork(models.Model):
 
     @ssi_decorator.pre_cancel_check()
     def _01_check_outstanding(self):
+        """Block cancellation while an outstanding is still linked.
+
+        Run before ``action_cancel``; raises when ``outstanding_id``
+        is still set, since the outstanding must be cancelled first.
+
+        :raises UserError: when this work still has an outstanding
+        """
         self.ensure_one()
         if self.outstanding_id:
             error_message = _(

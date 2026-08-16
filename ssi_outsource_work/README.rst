@@ -19,6 +19,15 @@ To install this module, you need to:
 5.  Search For *Financial Accounting*
 6.  Install the module
 
+Work Instruction
+================
+
+* `Outsource Work Type Category <docs/outsource_work_type_category/index.html>`_
+* `Outsource Work Type <docs/outsource_work_type/index.html>`_
+* `Outsource Work Outstanding Type <docs/outsource_work_outstanding_type/index.html>`_
+* `Outsource Work Outstanding <docs/outsource_work_outstanding/index.html>`_
+* `Outsource Work Outstanding Batch <docs/outsource_work_outstanding_batch/index.html>`_
+
 Bug Tracker
 ===========
 

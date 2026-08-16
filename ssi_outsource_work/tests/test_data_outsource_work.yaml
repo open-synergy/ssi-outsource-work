@@ -1,3 +1,6 @@
+options:
+  auto_refresh: true
+
 scenarios:
   - name: "OutsourceWorkTypeCategory - Create master data"
     steps:
@@ -155,14 +158,10 @@ scenarios:
         method: "action_confirm"
         as_user: "base.user_admin"
 
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "outstanding"
-        method: "invalidate_cache"
-
       - step: "Assert outstanding confirmed"
         action: "assert"
         target: "outstanding"
+        refresh: true
         asserts:
           state:
             type: "value"

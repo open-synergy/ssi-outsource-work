@@ -7,6 +7,13 @@ from odoo import fields, models
 
 
 class OutsourceWorkTypeCategory(models.Model):
+    """
+    Master data category grouping ``outsource_work_type`` records.
+
+    Supports a self-referencing ``parent_id`` so categories can be
+    organized hierarchically.
+    """
+
     _name = "outsource_work_type_category"
     _inherit = ["mixin.master_data"]
     _description = "Outsource Work Type Category"

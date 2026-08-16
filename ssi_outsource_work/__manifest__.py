@@ -21,6 +21,7 @@
         "ssi_duration_mixin",
         "ssi_product_line_account_mixin",
         "ssi_transaction_pricelist_mixin",
+        "web_tour",
     ],
     "data": [
         "security/ir_module_category_data.xml",
@@ -42,6 +43,7 @@
         "views/outsource_work_outstanding_views.xml",
         "views/outsource_work_outstanding_batch_views.xml",
         "views/outsource_work_outstanding_portal_templates.xml",
+        "views/assets.xml",
     ],
     "demo": [],
     "contributors": [

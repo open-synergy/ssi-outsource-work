@@ -8,6 +8,16 @@ from odoo.addons.ssi_decorator import ssi_decorator
 
 
 class OutsourceWorkOutstandingBatch(models.Model):
+    """
+    Groups several outstandings into one batch approval workflow.
+
+    Populates ``detail_ids`` with one
+    ``outsource_work_outstanding_batch_detail`` per matching partner,
+    each backed by its own ``outsource_work_outstanding``, and
+    propagates this batch's confirm/approve/reject/restart/cancel
+    transitions down to every outstanding it created.
+    """
+
     _name = "outsource_work_outstanding_batch"
     _inherit = [
         "mixin.transaction_cancel",
@@ -169,6 +179,11 @@ class OutsourceWorkOutstandingBatch(models.Model):
         "detail_ids.outstanding_id.amount_total",
     )
     def _compute_total(self):
+        """Sum the totals of every outstanding linked via ``detail_ids``.
+
+        Aggregates ``amount_untaxed``/``amount_tax``/``amount_total``
+        from each detail's ``outstanding_id``.
+        """
         for record in self:
             amount_untaxed = amount_tax = amount_total = 0.0
             for detail in record.detail_ids:
@@ -181,15 +196,29 @@ class OutsourceWorkOutstandingBatch(models.Model):
             record.amount_total = amount_untaxed + amount_tax
 
     def action_populate(self):
+        """Populate this batch with matching outstandings.
+
+        Delegates to ``_populate`` for every record in ``self``.
+        """
         for record in self:
             record._populate()
 
     def action_clear(self):
+        """Remove every detail (and outstanding) of this batch.
+
+        Delegates to ``_unlink_detail`` for every record in ``self``.
+        """
         for record in self:
             record._unlink_detail()
 
     @ssi_decorator.post_confirm_action()
     def _post_confirm_action_10_confirm_outstanding(self):
+        """Populate and confirm every outstanding of this batch.
+
+        Run after ``action_confirm``: for each detail, populates its
+        outstanding with matching work, then confirms it when
+        ``confirm_ok`` allows.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             outstanding = detail.outstanding_id
@@ -199,6 +228,11 @@ class OutsourceWorkOutstandingBatch(models.Model):
 
     @ssi_decorator.post_approve_action()
     def _post_approve_action_10_approve_outstanding(self):
+        """Approve every outstanding of this batch.
+
+        Run after ``action_approve_approval``: approves each detail's
+        outstanding when its ``approve_ok`` allows.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             outstanding = detail.outstanding_id
@@ -207,6 +241,11 @@ class OutsourceWorkOutstandingBatch(models.Model):
 
     @ssi_decorator.post_reject_action()
     def _post_reject_action_10_reject_outstanding(self):
+        """Reject every outstanding of this batch.
+
+        Run after ``action_reject_approval``: rejects each detail's
+        outstanding when its ``reject_ok`` allows.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             outstanding = detail.outstanding_id
@@ -215,6 +254,11 @@ class OutsourceWorkOutstandingBatch(models.Model):
 
     @ssi_decorator.post_restart_action()
     def _post_restart_action_10_restart_outstanding(self):
+        """Restart every outstanding of this batch.
+
+        Run after ``action_restart``: restarts each detail's
+        outstanding when its ``restart_ok`` allows.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             outstanding = detail.outstanding_id
@@ -223,6 +267,12 @@ class OutsourceWorkOutstandingBatch(models.Model):
 
     @ssi_decorator.post_cancel_action()
     def _post_cancel_action_10_cancel_outstanding(self):
+        """Cancel every outstanding of this batch.
+
+        Run after ``action_cancel``: cancels each detail's outstanding
+        (using this batch's ``cancel_reason_id``) when its
+        ``cancel_ok`` allows.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             outstanding = detail.outstanding_id
@@ -230,6 +280,13 @@ class OutsourceWorkOutstandingBatch(models.Model):
                 outstanding.action_cancel(self.cancel_reason_id)
 
     def _populate(self):
+        """Build one detail per partner with matching outsource work.
+
+        Clears any existing details, searches work matching
+        ``_prepare_populate_domain``, creates one detail per distinct
+        partner found, then asks each detail to create its own
+        outstanding.
+        """
         self.ensure_one()
         Work = self.env["outsource_work"]
         Detail = self.env["outsource_work_outstanding_batch_detail"]
@@ -248,12 +305,25 @@ class OutsourceWorkOutstandingBatch(models.Model):
             detail._create_outstanding()
 
     def _unlink_detail(self):
+        """Delete every detail of this batch and its outstanding.
+
+        Removes each detail's ``outstanding_id`` first, then the
+        details themselves.
+        """
         self.ensure_one()
         for detail in self.detail_ids:
             detail.outstanding_id.unlink()
         self.detail_ids.unlink()
 
     def _prepare_populate_domain(self):
+        """Build the search domain used by ``_populate``.
+
+        Matches done, unassigned outsource work of the same currency
+        within ``date_start``/``date_end``; further filtered by
+        ``analytic_account_id`` when set.
+
+        :return: a search domain for ``outsource_work``
+        """
         self.ensure_one()
         result = [
             ("date", ">=", self.date_start),
