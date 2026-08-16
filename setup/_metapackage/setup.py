@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo14-addon-ssi_outsource_work',
         'odoo14-addon-ssi_outsource_work_rate',
+        'odoo14-addon-test_ssi_outsource_work',
     ],
     classifiers=[
         'Programming Language :: Python',

@@ -20,6 +20,7 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [ssi_outsource_work](ssi_outsource_work/) | 14.0.1.16.0 |  | Outsource Work
 [ssi_outsource_work_rate](ssi_outsource_work_rate/) | 14.0.1.3.0 |  | Outsource Work Rate
+[test_ssi_outsource_work](test_ssi_outsource_work/) | 14.0.1.0.0 |  | Test Module - Outsource Work Object Mixin
 
 [//]: # (end addons)
 
