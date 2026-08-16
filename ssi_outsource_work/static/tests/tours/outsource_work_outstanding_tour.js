@@ -231,26 +231,50 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
 
             // Flow 4 — Change the required fields
-            // Done AFTER the inline actions above (not interleaved with
-            // them): a type="object" button click auto-saves and reloads
-            // the whole form, and racing that reload with the Save click
-            // below made the "Record is saved" assertion flaky.
+            // The inline actions above are type="object" buttons that
+            // auto-save and silently reload the record in place (their
+            // Python side returns no action). That reload leaves stale
+            // slots in the form renderer's field widget list (x2many
+            // widgets like work_ids/tax_ids get destroyed and rebuilt),
+            // and touching Date Due + Save directly afterwards raced with
+            // that cleanup: commitChanges() on the reload's leftover
+            // widget threw and the form got stuck in edit mode. Force a
+            // fully fresh widget tree instead — navigate back to the list
+            // and reopen the same record — before touching any field.
+            {
+                content: "Back to the Outstandings list",
+                trigger: ".breadcrumb-item.o_back_button a:contains(Outstandings)",
+            },
+            {
+                content: "Outstandings list is displayed again",
+                trigger:
+                    ".o_control_panel .breadcrumb-item.active:contains(Outstandings)",
+                extra_trigger: ".o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Reopen the record",
+                trigger: ".o_data_row:contains(TOUR-OWO-EDIT) .o_data_cell:first",
+                extra_trigger: ".o_list_view",
+            },
+            {
+                content: "Click the Edit button again",
+                trigger: ".o_form_button_edit",
+            },
+            {
+                content: "Form is editable on the fresh widget tree",
+                trigger: ".o_form_view.o_form_editable",
+                run: function () {
+                    // Assertion only.
+                },
+            },
             {
                 content: "Fill in Date Due",
                 trigger: ".o_field_widget[name='date_due'] input",
                 extra_trigger: ".o_form_view.o_form_editable",
                 run: "text 02/28/2026",
-            },
-            {
-                // Blur the Date Due input by clicking a neutral, inert
-                // element (the active breadcrumb item has no click handler)
-                // before Save — clicking Save while the field widget is
-                // still mid-commit from the change above raced with the
-                // widget's own commitChanges() and left the form stuck in
-                // edit mode.
-                content: "Commit the Date Due change",
-                trigger: ".breadcrumb-item.active",
-                run: "click",
             },
 
             // Flow 5 — Click Save
