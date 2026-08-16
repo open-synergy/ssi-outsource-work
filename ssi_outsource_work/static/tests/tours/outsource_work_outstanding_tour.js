@@ -196,12 +196,17 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
 
             // Flow 3 — Click Populate / Clear / Recompute Tax on the Works tab
             //
-            // Each button's own :enabled gate is sufficient: Odoo disables
-            // a type="object" button synchronously when clicked and only
-            // re-enables it in form_renderer.js after its whole save + RPC
-            // + reload cycle — including the re-render of any x2many widget
-            // the method touches (work_ids/tax_ids) — has completed. See
-            // odoo-development-ui-test skill, patterns.md §M.
+            // Each button auto-saves and silently reloads the record in
+            // place (its Python side returns no action). The button's own
+            // :enabled gate proves that cycle is done, but the reload
+            // leaves stale slots in the form renderer's field widget list
+            // (x2many widgets like work_ids/tax_ids get destroyed and
+            // rebuilt) — clicking the NEXT button before that cleanup
+            // settles hits a stale/destroyed widget slot and throws
+            // "Cannot read properties of null (reading 'commitChanges')"
+            // (confirmed in CI). Force a fully fresh widget tree between
+            // every button — navigate back to the list and reopen the
+            // record — the same fix Flow 4 already relies on below.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -215,12 +220,70 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
+                content: "Back to the Outstandings list",
+                trigger: ".breadcrumb-item.o_back_button a:contains(Outstandings)",
+            },
+            {
+                content: "Outstandings list is displayed again",
+                trigger:
+                    ".o_control_panel .breadcrumb-item.active:contains(Outstandings)",
+                extra_trigger: ".o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Reopen the record after Populate",
+                trigger: ".o_data_row:contains(TOUR-OWO-EDIT) .o_data_cell:first",
+                extra_trigger: ".o_list_view",
+            },
+            {
+                content: "Click the Edit button after Populate",
+                trigger: ".o_form_button_edit",
+            },
+            {
+                content: "Form is editable on a fresh widget tree",
+                trigger: ".o_form_view.o_form_editable",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
                 content: "Click Clear",
                 trigger: ".o_form_view button[name='action_clear_work']",
             },
             {
                 content: "Clear finished",
                 trigger: ".o_form_view button[name='action_clear_work']:enabled",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Back to the Outstandings list after Clear",
+                trigger: ".breadcrumb-item.o_back_button a:contains(Outstandings)",
+            },
+            {
+                content: "Outstandings list is displayed again after Clear",
+                trigger:
+                    ".o_control_panel .breadcrumb-item.active:contains(Outstandings)",
+                extra_trigger: ".o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Reopen the record after Clear",
+                trigger: ".o_data_row:contains(TOUR-OWO-EDIT) .o_data_cell:first",
+                extra_trigger: ".o_list_view",
+            },
+            {
+                content: "Click the Edit button after Clear",
+                trigger: ".o_form_button_edit",
+            },
+            {
+                content: "Form is editable on a fresh widget tree again",
+                trigger: ".o_form_view.o_form_editable",
                 run: function () {
                     // Assertion only.
                 },
@@ -238,16 +301,8 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
 
             // Flow 4 — Change the required fields
-            // The inline actions above are type="object" buttons that
-            // auto-save and silently reload the record in place (their
-            // Python side returns no action). That reload leaves stale
-            // slots in the form renderer's field widget list (x2many
-            // widgets like work_ids/tax_ids get destroyed and rebuilt),
-            // and touching Date Due + Save directly afterwards raced with
-            // that cleanup: commitChanges() on the reload's leftover
-            // widget threw and the form got stuck in edit mode. Force a
-            // fully fresh widget tree instead — navigate back to the list
-            // and reopen the same record — before touching any field.
+            // Same fresh-widget-tree fix as Flow 3, applied once more
+            // before touching Date Due — see the comment on Flow 3.
             {
                 content: "Back to the Outstandings list",
                 trigger: ".breadcrumb-item.o_back_button a:contains(Outstandings)",

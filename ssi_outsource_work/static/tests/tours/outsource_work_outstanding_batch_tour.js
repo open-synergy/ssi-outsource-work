@@ -176,12 +176,18 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
 
             // Flow 3 — Click Populate / Clear on the Outstandings tab
             //
-            // Each button's own :enabled gate is sufficient: Odoo disables
-            // a type="object" button synchronously when clicked and only
-            // re-enables it in form_renderer.js after its whole save + RPC
-            // + reload cycle — including the re-render of any x2many widget
-            // the method touches (detail_ids) — has completed. See
-            // odoo-development-ui-test skill, patterns.md §M.
+            // Each button auto-saves and silently reloads the record in
+            // place (its Python side returns no action). The button's own
+            // :enabled gate proves that cycle is done, but the reload
+            // leaves stale slots in the form renderer's field widget list
+            // (the detail_ids x2many widget gets destroyed and rebuilt) —
+            // clicking the NEXT button before that cleanup settles hits a
+            // stale/destroyed widget slot and throws "Cannot read
+            // properties of null (reading 'commitChanges')" (confirmed in
+            // CI on the sibling outsource_work_outstanding_edit tour).
+            // Force a fully fresh widget tree between the two buttons —
+            // navigate back to the list and reopen the record — the same
+            // fix Flow 4 already relies on below.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -192,6 +198,36 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_batch_tour", function
                 run: function () {
                     // Assertion only: Odoo disables the button synchronously
                     // while the RPC cycle of a type="object" button runs.
+                },
+            },
+            {
+                content: "Back to the Outstanding Batches list after Populate",
+                trigger:
+                    ".breadcrumb-item.o_back_button a:contains(Outstanding Batches)",
+            },
+            {
+                content: "Outstanding Batches list is displayed again after Populate",
+                trigger:
+                    ".o_control_panel .breadcrumb-item.active:contains(Outstanding Batches)",
+                extra_trigger: ".o_list_view",
+                run: function () {
+                    // Assertion only.
+                },
+            },
+            {
+                content: "Reopen the record after Populate",
+                trigger: ".o_data_row:contains(TOUR-OWB-EDIT) .o_data_cell:first",
+                extra_trigger: ".o_list_view",
+            },
+            {
+                content: "Click the Edit button after Populate",
+                trigger: ".o_form_button_edit",
+            },
+            {
+                content: "Form is editable on a fresh widget tree",
+                trigger: ".o_form_view.o_form_editable",
+                run: function () {
+                    // Assertion only.
                 },
             },
             {
