@@ -207,9 +207,21 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             // the click's own commitChanges() call hits a stale/destroyed
             // widget slot in the renderer and throws
             // "Cannot read properties of null (reading 'commitChanges')",
-            // leaving the form stuck. So every button gets its OWN
-            // dedicated settle wait — on the field IT rebuilds — before the
-            // next button is clicked, not just once at the end.
+            // leaving the form stuck. So every button gets its own
+            // dedicated settle wait before the next one is clicked, not
+            // just once at the end.
+            //
+            // The settle wait always targets work_ids, never tax_ids: a
+            // trigger must be VISIBLE to satisfy a tour step, and tax_ids
+            // lives on the "Accounting" tab, which is not the active
+            // notebook page (the "Works" tab, holding work_ids, is
+            // inserted first and is active by default — see
+            // outsource_work_outstanding_views.xml). A FormRenderer
+            // re-render always rebuilds every field widget in the same
+            // pass regardless of which tab it lives on, so waiting on the
+            // visible work_ids list is an equally valid — and, unlike
+            // tax_ids, actually satisfiable — signal that the render
+            // triggered by Recompute Tax has finished too.
             {
                 content: "Click Populate",
                 trigger: ".o_form_view button[name='action_populate']",
@@ -259,8 +271,8 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
-                content: "Tax lines widget has re-rendered",
-                trigger: ".o_form_view [name='tax_ids'] .o_list_view",
+                content: "Works list widget has re-rendered after Recompute Tax",
+                trigger: ".o_form_view [name='work_ids'] .o_list_view",
                 run: function () {
                     // Assertion only.
                 },
