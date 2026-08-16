@@ -7,6 +7,14 @@ from odoo import fields, models
 
 
 class OutsourceWorkOutstandingTax(models.Model):
+    """
+    Represents one grouped tax line of an outstanding.
+
+    Child of ``outsource_work_outstanding``, created by
+    ``get_taxes_values``/``_recompute_tax``; each line becomes its own
+    ``account.move.line`` when the outstanding is posted.
+    """
+
     _name = "outsource_work_outstanding_tax"
     _description = "Outsource Work Outstanding Tax"
 
@@ -57,6 +65,11 @@ class OutsourceWorkOutstandingTax(models.Model):
     )
 
     def _create_aml(self):
+        """Create the ``account.move.line`` for this tax line.
+
+        Builds the line from ``_prepare_aml_data`` and stores its id
+        back on ``account_move_line_id``.
+        """
         self.ensure_one()
         AML = self.env["account.move.line"]
         aml = AML.with_context(check_move_validity=False).create(
@@ -69,6 +82,13 @@ class OutsourceWorkOutstandingTax(models.Model):
         )
 
     def _prepare_aml_data(self):
+        """Build the ``account.move.line`` values for this tax line.
+
+        Extension point: override to add analytic/operating unit
+        fields without touching ``_create_aml``.
+
+        :return: dict of ``account.move.line`` values
+        """
         self.ensure_one()
         outstanding = self.outstanding_id
         aa_id = self.analytic_account_id and self.analytic_account_id.id or False
@@ -86,6 +106,15 @@ class OutsourceWorkOutstandingTax(models.Model):
         }
 
     def _get_aml_amount(self, currency):
+        """Compute the debit/credit/amount_currency for the tax AML.
+
+        Converts ``tax_amount`` into the outstanding's currency as of
+        the outstanding's date, then splits it into a debit or a
+        credit depending on its sign.
+
+        :param currency: currency to convert ``tax_amount`` into
+        :return: tuple ``(debit, credit, amount_currency)``
+        """
         self.ensure_one()
         debit = credit = amount = amount_currency = 0.0
         outstanding = self.outstanding_id

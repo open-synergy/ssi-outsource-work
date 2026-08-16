@@ -7,6 +7,13 @@ from odoo import fields, models
 
 
 class OutsourceWorkOutstandingType(models.Model):
+    """
+    Master data type for ``outsource_work_outstanding`` documents.
+
+    Configures the default payable journal and account applied to
+    outstandings created against it.
+    """
+
     _name = "outsource_work_outstanding_type"
     _inherit = ["mixin.master_data"]
     _description = "Outsource Work Outstanding Type"

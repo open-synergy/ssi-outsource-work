@@ -8,6 +8,14 @@ from odoo.addons.ssi_decorator import ssi_decorator
 
 
 class OutsourceWorkOutstanding(models.Model):
+    """
+    Groups a partner's confirmed outsource work into a payable.
+
+    Collects ``outsource_work`` records due within a date range for a
+    partner into a single document, computes tax and totals, and
+    posts a payable ``account.move`` when it reaches ``done``.
+    """
+
     _name = "outsource_work_outstanding"
     _inherit = [
         "mixin.transaction_cancel",
@@ -140,6 +148,12 @@ class OutsourceWorkOutstanding(models.Model):
         "tax_ids.tax_amount",
     )
     def _compute_total(self):
+        """Compute the untaxed, tax, and total amounts of this document.
+
+        Sums ``work_ids.price_subtotal`` for the untaxed amount and
+        ``tax_ids.tax_amount`` for the tax amount; the total is their
+        sum.
+        """
         for record in self:
             amount_untaxed = amount_tax = 0.0
             for work in record.work_ids:
@@ -208,6 +222,11 @@ class OutsourceWorkOutstanding(models.Model):
         "payable_move_line_id.matched_credit_ids",
     )
     def _compute_reconciled(self):
+        """Compute whether the payable move line is reconciled.
+
+        Mirrors ``payable_move_line_id.reconciled``, resolving to
+        ``False`` when there is no payable move line yet.
+        """
         for record in self:
             result = False
             if record.payable_move_line_id.reconciled:
@@ -229,6 +248,13 @@ class OutsourceWorkOutstanding(models.Model):
         "payable_move_line_id.amount_residual_currency",
     )
     def _compute_residual(self):
+        """Compute the realized (paid) and residual amounts.
+
+        Residual is taken from the payable move line's
+        ``amount_residual``/``amount_residual_currency`` (negated,
+        since the payable line carries a credit balance); realized is
+        ``amount_total`` minus residual.
+        """
         for document in self:
             realized = 0.0
             residual = document.amount_total
@@ -274,6 +300,7 @@ class OutsourceWorkOutstanding(models.Model):
             ("confirm", "Waiting for Approval"),
             ("done", "Done"),
             ("cancel", "Cancelled"),
+            ("reject", "Rejected"),
         ],
         copy=False,
         default="draft",
@@ -315,6 +342,13 @@ class OutsourceWorkOutstanding(models.Model):
 
     @ssi_decorator.post_done_action()
     def _post_done_acion_20_create_aml(self):
+        """Post the payable move and its lines when the record is done.
+
+        Run after ``action_done``: creates the ``account.move`` from
+        ``_prepare_account_move_data``, stores it on ``move_id``,
+        creates the receivable, work, and tax journal items, then
+        posts the move.
+        """
         self.ensure_one()
         move = (
             self.env["account.move"]
@@ -332,6 +366,11 @@ class OutsourceWorkOutstanding(models.Model):
         self.move_id.action_post()
 
     def _create_receivable_aml(self):
+        """Create the payable ``account.move.line`` for this document.
+
+        Builds the line from ``_prepare_payable_aml_data`` and stores
+        its id back on ``payable_move_line_id``.
+        """
         self.ensure_one()
         AML = self.env["account.move.line"]
         aml = AML.with_context(check_move_validity=False).create(
@@ -344,6 +383,13 @@ class OutsourceWorkOutstanding(models.Model):
         )
 
     def _prepare_payable_aml_data(self):
+        """Build the payable ``account.move.line`` values.
+
+        Extension point: override to add analytic/operating unit
+        fields without touching ``_create_receivable_aml``.
+
+        :return: dict of ``account.move.line`` values
+        """
         self.ensure_one()
         debit, credit, amount_currency = self._get_payable_amount(self.currency_id)
         data = {
@@ -360,6 +406,15 @@ class OutsourceWorkOutstanding(models.Model):
         return data
 
     def _get_payable_amount(self, currency):
+        """Compute the debit/credit/amount_currency for the payable AML.
+
+        Converts ``amount_total`` into the company currency as of
+        ``date``, then splits it into a debit or a credit depending on
+        its sign.
+
+        :param currency: currency ``amount_total`` is expressed in
+        :return: tuple ``(debit, credit, amount_currency)``
+        """
         self.ensure_one()
         debit = credit = amount = amount_currency = 0.0
         move_date = self.date
@@ -378,16 +433,31 @@ class OutsourceWorkOutstanding(models.Model):
         return debit, credit, amount_currency
 
     def _create_work_aml(self):
+        """Create the ``account.move.line`` of every linked work.
+
+        Delegates to ``outsource_work._create_aml`` for each record in
+        ``work_ids``.
+        """
         self.ensure_one()
         for work in self.work_ids:
             work._create_aml()
 
     def _create_tax_aml(self):
+        """Create the ``account.move.line`` of every tax line.
+
+        Delegates to ``outsource_work_outstanding_tax._create_aml``
+        for each record in ``tax_ids``.
+        """
         self.ensure_one()
         for tax in self.tax_ids:
             tax._create_aml()
 
     def _disconnect_invoice(self):
+        """Clear the ``invoice_id`` link on this document.
+
+        Kept for compatibility with modules that still reference
+        ``invoice_id``; ``invoice_id`` is not a field on this model.
+        """
         self.ensure_one()
         self.write(
             {
@@ -396,14 +466,36 @@ class OutsourceWorkOutstanding(models.Model):
         )
 
     def _get_payable_journal(self):
+        """Return the journal to post the payable move in.
+
+        Extension point: override to select a different journal than
+        ``payable_journal_id``.
+
+        :return: an ``account.journal`` record
+        """
         self.ensure_one()
         return self.payable_journal_id
 
     def _get_payable_account(self):
+        """Return the account to post the payable line to.
+
+        Extension point: override to select a different account than
+        ``payable_account_id``.
+
+        :return: an ``account.account`` record
+        """
         self.ensure_one()
         return self.payable_account_id
 
     def _prepare_account_move_data(self):
+        """Build the ``account.move`` values for this document.
+
+        Extension point: override in a glue module to add analytic or
+        operating unit fields without touching
+        ``_post_done_acion_20_create_aml``.
+
+        :return: dict of ``account.move`` values
+        """
         self.ensure_one()
         journal = self._get_payable_journal()
         return {
@@ -415,6 +507,11 @@ class OutsourceWorkOutstanding(models.Model):
 
     @ssi_decorator.post_cancel_action()
     def _post_delete_acion_10_delete_invoice(self):
+        """Delete the payable move when the record is cancelled.
+
+        Run after ``action_cancel``: clears ``move_id`` and deletes
+        the ``account.move`` it pointed to, if any.
+        """
         self.ensure_one()
         if self.move_id:
             invoice = self.move_id
@@ -426,18 +523,36 @@ class OutsourceWorkOutstanding(models.Model):
             invoice.unlink()
 
     def action_populate(self):
+        """Populate this outstanding with matching outsource work.
+
+        Delegates to ``_populate`` for every record in ``self``.
+        """
         for record in self:
             record._populate()
 
     def action_clear_work(self):
+        """Detach every outsource work linked to this outstanding.
+
+        Delegates to ``_clear_work`` for every record in ``self``.
+        """
         for record in self:
             record._clear_work()
 
     def _clear_work(self):
+        """Detach ``work_ids`` from this outstanding.
+
+        Sets ``outstanding_id`` to ``False`` on every linked work, so
+        it becomes available for a future populate.
+        """
         self.ensure_one()
         self.work_ids.write({"outstanding_id": False})
 
     def _populate(self):
+        """Attach matching ``outsource_work`` records to this document.
+
+        Searches for done, unassigned work matching
+        ``_prepare_populate_domain`` and links it via ``outstanding_id``.
+        """
         self.ensure_one()
         Work = self.env["outsource_work"]
         criteria = self._prepare_populate_domain()
@@ -448,6 +563,15 @@ class OutsourceWorkOutstanding(models.Model):
         )
 
     def _prepare_populate_domain(self):
+        """Build the search domain used by ``_populate``.
+
+        Matches done outsource work of the same partner and currency,
+        not yet assigned to an outstanding, within
+        ``date_start``/``date_end``; further filtered by
+        ``analytic_account_id`` when set.
+
+        :return: a search domain for ``outsource_work``
+        """
         self.ensure_one()
         result = [
             ("partner_id", "=", self.partner_id.id),
@@ -462,10 +586,19 @@ class OutsourceWorkOutstanding(models.Model):
         return result
 
     def action_compute_tax(self):
+        """Recompute the tax lines of this document.
+
+        Delegates to ``_recompute_tax`` for every record in ``self``.
+        """
         for record in self:
             record._recompute_tax()
 
     def _recompute_tax(self):
+        """Replace ``tax_ids`` with freshly grouped tax lines.
+
+        Deletes the existing tax lines, then recreates them from
+        ``get_taxes_values``.
+        """
         self.ensure_one()
         taxes_grouped = self.get_taxes_values()
         self.tax_ids.unlink()
@@ -475,6 +608,15 @@ class OutsourceWorkOutstanding(models.Model):
         self.write({"tax_ids": tax_lines})
 
     def get_taxes_values(self):
+        """Compute taxes for every work line, grouped by tax/account.
+
+        Calls ``compute_all`` on each work's taxes and accumulates the
+        results keyed by ``get_grouping_key``, so lines sharing the
+        same tax/account/analytic account are merged into one.
+
+        :return: dict keyed by grouping key, values are
+            ``_prepare_tax_line_vals``-shaped dicts
+        """
         tax_grouped = {}
         cur = self.currency_id
         round_curr = cur.round
@@ -494,6 +636,13 @@ class OutsourceWorkOutstanding(models.Model):
         return tax_grouped
 
     def get_grouping_key(self, tax_line):
+        """Build the key used to group tax lines in ``get_taxes_values``.
+
+        :param tax_line: dict as returned by ``compute_all``'s
+            ``"taxes"`` entries plus ``analytic_account_id``
+        :return: string key combining tax, account, and analytic
+            account ids
+        """
         self.ensure_one()
         return (
             str(tax_line["tax_id"])
@@ -504,6 +653,14 @@ class OutsourceWorkOutstanding(models.Model):
         )
 
     def _prepare_tax_line_vals(self, line, tax):
+        """Build the ``outsource_work_outstanding_tax`` values.
+
+        :param line: the ``outsource_work`` record the tax was
+            computed from
+        :param tax: dict as returned by ``compute_all``'s ``"taxes"``
+            entries
+        :return: dict of ``outsource_work_outstanding_tax`` values
+        """
         vals = {
             "outstanding_id": self.id,
             "tax_id": tax["id"],

@@ -39,6 +39,21 @@ class MixinOutsourceWorkObject(models.AbstractModel):
     def fields_view_get(
         self, view_id=None, view_type="form", toolbar=False, submenu=False
     ):
+        """Insert the Outsource Work tab into the form view on the fly.
+
+        Overridden so models with ``_outsource_work_create_page = True``
+        get the ``outsource_work_template`` QWeb snippet spliced into
+        their form arch at ``_work_log_page_xpath``, without every
+        inheriting model having to redeclare the tab in its own view.
+
+        :param view_id: id of the view being rendered
+        :param view_type: type of view requested (only ``"form"`` is
+            affected by this override)
+        :param toolbar: whether to include the toolbar in the result
+        :param submenu: whether to include the submenu in the result
+        :return: the view description dict, with ``arch``/``fields``
+            patched when the tab was inserted
+        """
         res = super().fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
@@ -71,6 +86,12 @@ class MixinOutsourceWorkObject(models.AbstractModel):
         "outsource_work_ids.analytic_account_id",
     )
     def _compute_allowed_analytic_account_ids(self):
+        """Compute the analytic accounts allowed on outsource work logs.
+
+        Base implementation always resolves to an empty recordset;
+        inheriting models override this to filter analytic accounts
+        based on their own ``ir.model`` configuration.
+        """
         for document in self:
             document.allowed_analytic_account_ids = []
 
@@ -81,6 +102,14 @@ class MixinOutsourceWorkObject(models.AbstractModel):
     )
 
     def unlink(self):
+        """Delete related outsource work logs before deleting the record.
+
+        Overridden so ``outsource_work_ids`` do not become orphaned
+        (dangling ``model_name``/``res_id`` reference) once the parent
+        document is removed.
+
+        :return: result of the ``super().unlink()`` call
+        """
         outsource_works = self.mapped("outsource_work_ids")
         outsource_works.unlink()
         return super(MixinOutsourceWorkObject, self).unlink()

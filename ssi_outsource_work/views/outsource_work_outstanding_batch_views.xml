@@ -114,7 +114,7 @@
                             style="margin-right:4px"
                         />
                     <field name="detail_ids">
-                        <tree>
+                        <tree editable="bottom">
                             <field name="partner_id" />
                             <field name="outstanding_id" />
                         </tree>
