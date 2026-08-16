@@ -1,0 +1,100 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* test_ssi_outsource_work
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__allowed_analytic_account_ids
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__allowed_analytic_account_ids
+msgid "Analytic Accounts"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__create_uid
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__create_date
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__display_name
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model_terms:ir.ui.view,arch_db:test_ssi_outsource_work.test_outsource_work_object_default_view_form
+#: model_terms:ir.ui.view,arch_db:test_ssi_outsource_work.test_outsource_work_object_enabled_view_form
+msgid "General"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__id
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__id
+msgid "ID"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default____last_update
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__write_uid
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__write_date
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__name
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__name
+msgid "Name"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_default__outsource_work_ids
+#: model:ir.model.fields,field_description:test_ssi_outsource_work.field_test_outsource_work_object_enabled__outsource_work_ids
+msgid "Outsource Work Logs"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.actions.act_window,name:test_ssi_outsource_work.test_outsource_work_object_default_action
+msgid "Test Outsource Work Object - Default"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.actions.act_window,name:test_ssi_outsource_work.test_outsource_work_object_enabled_action
+msgid "Test Outsource Work Object - Enabled"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model,name:test_ssi_outsource_work.model_test_outsource_work_object_default
+msgid "Test Outsource Work Object Mixin - Default"
+msgstr ""
+
+#. module: test_ssi_outsource_work
+#: model:ir.model,name:test_ssi_outsource_work.model_test_outsource_work_object_enabled
+msgid "Test Outsource Work Object Mixin - Enabled"
+msgstr ""
