@@ -194,15 +194,30 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
 
-            // Flow 3 — Change the required fields
+            // Flow 3 — Click Populate / Clear / Recompute Tax on the Works tab
             {
-                content: "Fill in Date Due",
-                trigger: ".o_field_widget[name='date_due'] input",
-                extra_trigger: ".o_form_view.o_form_editable",
-                run: "text 02/28/2026",
+                content: "Click Populate",
+                trigger: ".o_form_view button[name='action_populate']",
             },
-
-            // Flow 4 — Click Recompute Tax after the Works list changes
+            {
+                content: "Populate finished",
+                trigger: ".o_form_view button[name='action_populate']:enabled",
+                run: function () {
+                    // Assertion only: Odoo disables the button synchronously
+                    // while the RPC cycle of a type="object" button runs.
+                },
+            },
+            {
+                content: "Click Clear",
+                trigger: ".o_form_view button[name='action_clear_work']",
+            },
+            {
+                content: "Clear finished",
+                trigger: ".o_form_view button[name='action_clear_work']:enabled",
+                run: function () {
+                    // Assertion only.
+                },
+            },
             {
                 content: "Click Recompute Tax",
                 trigger: ".o_form_view button[name='action_compute_tax']",
@@ -213,6 +228,18 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 run: function () {
                     // Assertion only.
                 },
+            },
+
+            // Flow 4 — Change the required fields
+            // Done AFTER the inline actions above (not interleaved with
+            // them): a type="object" button click auto-saves and reloads
+            // the whole form, and racing that reload with the Save click
+            // below made the "Record is saved" assertion flaky.
+            {
+                content: "Fill in Date Due",
+                trigger: ".o_field_widget[name='date_due'] input",
+                extra_trigger: ".o_form_view.o_form_editable",
+                run: "text 02/28/2026",
             },
 
             // Flow 5 — Click Save
@@ -301,6 +328,17 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
 
             // Post-Condition — The record is permanently removed
+            {
+                // Wait for the delete dialog to fully close and the form to
+                // finish re-rendering (it may navigate to the next record in
+                // the list instead of returning to the list) before touching
+                // the breadcrumb — see patterns.md §K.
+                content: "Delete dialog is closed",
+                trigger: "body:not(:has(.modal))",
+                run: function () {
+                    // Assertion only.
+                },
+            },
             {
                 content: "Click the Outstandings breadcrumb to return to the list",
                 trigger: ".breadcrumb-item.o_back_button a:contains(Outstandings)",
@@ -515,11 +553,24 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
             },
 
             // Post-Condition — Status changes to Rejected
+            // "reject" is not part of `_statusbar_visible_label`, so it only
+            // renders once it becomes the record's actual current value.
+            // Wait for the old "confirm" marker to be gone first — a data-
+            // independent signal that the statusbar has actually re-rendered
+            // from the reject RPC, not just that the dialog closed.
+            {
+                content: "Waiting for Approval marker is gone",
+                trigger:
+                    ".o_statusbar_status:not(:has(.o_arrow_button[data-value='confirm'].btn-primary))",
+                extra_trigger: "body:not(:has(.modal))",
+                run: function () {
+                    // Assertion only.
+                },
+            },
             {
                 content: "Status is Rejected",
                 trigger:
                     ".o_statusbar_status .o_arrow_button[data-value='reject'].btn-primary",
-                extra_trigger: "body:not(:has(.modal))",
                 run: function () {
                     // Assertion only.
                 },
@@ -588,15 +639,12 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_tour", function (requ
                 },
             },
             {
+                // Cancel_reason_id uses widget="radio" (FieldRadio), not a
+                // plain many2one input+autocomplete — select the option by
+                // clicking its <label>.
                 content: "Select the cancellation reason",
-                trigger: ".o_field_many2one[name='cancel_reason_id'] input",
-                run: "text TOUR Cancel Reason",
-            },
-            {
-                content: "Pick the reason",
-                trigger:
-                    ".ui-autocomplete .ui-menu-item a:contains(TOUR Cancel Reason)",
-                in_modal: false,
+                trigger: "[name='cancel_reason_id'] label:contains(TOUR Cancel Reason)",
+                run: "click",
             },
 
             // Flow 5 — Click Confirm

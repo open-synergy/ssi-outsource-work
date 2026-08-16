@@ -21,11 +21,10 @@
 
 1. Open the **Outsource Work > Outstanding Batches** menu.
 2. Find and open the record to edit.
-3. Change the required fields.
-4. On the **Outstandings** tab, click **Populate** again after changing **Currency**,
-   **Date Start**/**Date End**, or **Analytic Account**, to rebuild the details with the
-   newly matching Outsource Work. Click **Clear** to remove every detail and the
-   outstanding it created.
+3. On the **Outstandings** tab, click **Populate** to rebuild the details with Outsource
+   Work matching the current **Currency**, **Date Start**/**Date End**, and **Analytic
+   Account**. Click **Clear** to remove every detail and the outstanding it created.
+4. Change the required fields.
 5. Click **Save**.
 
 ## Post-Condition

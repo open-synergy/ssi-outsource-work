@@ -22,12 +22,12 @@
 
 1. Open the **Outsource Work > Outstandings** menu.
 2. Find and open the record to edit.
-3. Change the required fields.
-4. On the **Works** tab, click **Populate** again after changing **Partner**,
-   **Currency**, **Date Start**/**Date End**, or **Analytic Account**, to refresh the
-   list with the newly matching Outsource Work. Click **Clear** to detach all Outsource
-   Work already listed. Click **Recompute Tax** after the Works list changes, to rebuild
-   the **Accounting** tab's tax lines.
+3. On the **Works** tab, click **Populate** to refresh the list with Outsource Work
+   matching the current **Partner**, **Currency**, **Date Start**/**Date End**, and
+   **Analytic Account**. Click **Clear** to detach all Outsource Work already listed.
+   Click **Recompute Tax** to rebuild the **Accounting** tab's tax lines from the
+   current Works list.
+4. Change the required fields.
 5. Click **Save**.
 
 ## Post-Condition

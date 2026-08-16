@@ -65,8 +65,15 @@ class TestUiOutsourceWorkOutstanding(HttpSavepointCase):
         cls.outstanding_reject = _create_outstanding("TOUR-OWO-REJECT")
         cls.outstanding_reject.action_confirm()
         cls.outstanding_cancel = _create_outstanding("TOUR-OWO-CANCEL")
+        # global_use=True: the wizard's cancel_reason_id domain is
+        # model_id.all_cancel_reason_ids, which only includes reasons that
+        # are either explicitly linked to this ir.model or global_use=True.
         cls.env["base.cancel_reason"].create(
-            {"name": "TOUR Cancel Reason", "code": "TOUR-CANCEL"}
+            {
+                "name": "TOUR Cancel Reason",
+                "code": "TOUR-CANCEL",
+                "global_use": True,
+            }
         )
         cls.outstanding_restart = _create_outstanding("TOUR-OWO-RESTART")
         cls.outstanding_restart.action_cancel()

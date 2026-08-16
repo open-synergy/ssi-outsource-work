@@ -60,11 +60,18 @@ class TestUiOutsourceWorkOutstandingBatch(HttpSavepointCase):
         cls.batch_reject = _create_batch("TOUR-OWB-REJECT")
         cls.batch_reject.action_confirm()
         cls.batch_cancel = _create_batch("TOUR-OWB-CANCEL")
+        # global_use=True: the wizard's cancel_reason_id domain is
+        # model_id.all_cancel_reason_ids, which only includes reasons that
+        # are either explicitly linked to this ir.model or global_use=True.
         if not cls.env["base.cancel_reason"].search(
             [("name", "=", "TOUR Cancel Reason")]
         ):
             cls.env["base.cancel_reason"].create(
-                {"name": "TOUR Cancel Reason", "code": "TOUR-CANCEL"}
+                {
+                    "name": "TOUR Cancel Reason",
+                    "code": "TOUR-CANCEL",
+                    "global_use": True,
+                }
             )
         cls.batch_restart = _create_batch("TOUR-OWB-RESTART")
         cls.batch_restart.action_cancel()
