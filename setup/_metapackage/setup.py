@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo14-addon-ssi_outsource_work',
         'odoo14-addon-ssi_outsource_work_operating_unit',
         'odoo14-addon-ssi_outsource_work_rate',
+        'odoo14-addon-ssi_outsource_work_rate_operating_unit',
         'odoo14-addon-test_ssi_outsource_work',
     ],
     classifiers=[
