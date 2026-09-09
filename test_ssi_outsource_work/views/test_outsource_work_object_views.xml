@@ -13,9 +13,7 @@
                     <field name="name" />
                 </group>
                 <notebook>
-                    <page name="page_general" string="General">
-                        <field name="name" />
-                    </page>
+                    <page name="page_general" string="General" />
                 </notebook>
             </sheet>
         </form>
@@ -38,9 +36,7 @@
                     <field name="name" />
                 </group>
                 <notebook>
-                    <page name="page_general" string="General">
-                        <field name="name" />
-                    </page>
+                    <page name="page_general" string="General" />
                 </notebook>
             </sheet>
         </form>
