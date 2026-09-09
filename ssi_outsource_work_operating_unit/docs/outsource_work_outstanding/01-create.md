@@ -1,6 +1,6 @@
 # Create Outsource Work Outstanding
 
-> **Module:** ssi_outsource_work_operating_unit
+> **Module:** `ssi_outsource_work_operating_unit`
 >
 > **Extends:** ssi_outsource_work — model `outsource_work_outstanding`, aksi `01-create`
 
