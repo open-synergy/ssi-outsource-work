@@ -1,6 +1,6 @@
 # Deactivate Outsource Work Outstanding Type
 
-> **Module:** ssi_outsource_work
+> **Module:** `ssi_outsource_work`
 >
 > **Model:** `outsource_work_outstanding_type`
 >
