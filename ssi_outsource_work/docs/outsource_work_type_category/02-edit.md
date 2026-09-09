@@ -1,6 +1,6 @@
 # Edit Outsource Work Type Category
 
-> **Module:** ssi_outsource_work
+> **Module:** `ssi_outsource_work`
 >
 > **Model:** `outsource_work_type_category`
 >
