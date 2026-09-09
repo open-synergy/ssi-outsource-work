@@ -1,6 +1,6 @@
 # Activate Outsource Work Type
 
-> **Module:** ssi_outsource_work
+> **Module:** `ssi_outsource_work`
 >
 > **Model:** `outsource_work_type`
 >
