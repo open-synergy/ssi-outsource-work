@@ -152,6 +152,11 @@ scenarios:
         target: "rate"
         method: "action_confirm"
         as_user: "base.user_admin"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
 
       - step: "Reject rate"
         action: "call"
