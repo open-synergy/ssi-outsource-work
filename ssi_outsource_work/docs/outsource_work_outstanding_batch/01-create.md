@@ -1,6 +1,6 @@
 # Create Outsource Work Outstanding Batch
 
-> **Module:** ssi_outsource_work
+> **Module:** `ssi_outsource_work`
 >
 > **Model:** `outsource_work_outstanding_batch`
 >
