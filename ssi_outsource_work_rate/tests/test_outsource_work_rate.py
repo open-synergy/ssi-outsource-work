@@ -9,5 +9,8 @@ from odoo.tests import tagged
 
 @tagged("post_install", "-at_install")
 class TestOutsourceWorkRate(YamlTransactionCase):
+    """Cover the ``outsource_work_rate`` workflow and required fields."""
+
     def test_outsource_work_rate(self):
+        """Run the create/confirm/approve/reject/open/done scenarios."""
         self.run_yaml_scenario("test_data_outsource_work_rate.yaml")

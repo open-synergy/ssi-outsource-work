@@ -18,6 +18,7 @@
         "ssi_transaction_open_mixin",
         "ssi_transaction_done_mixin",
         "ssi_transaction_cancel_mixin",
+        "web_tour",
     ],
     "data": [
         "security/ir_module_category_data.xml",
@@ -29,6 +30,7 @@
         "data/approval_template_data.xml",
         "data/policy_template_data.xml",
         "views/outsource_work_rate_view.xml",
+        "views/assets.xml",
     ],
     "demo": [],
     "contributors": [

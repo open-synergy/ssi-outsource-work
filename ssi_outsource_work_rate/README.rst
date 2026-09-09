@@ -7,6 +7,22 @@ Outsource Work Rate
 ===================
 
 
+Work Instruction
+================
+
+* `Create Outsource Work Rate <docs/outsource_work_rate/01-create.html>`_
+* `Edit Outsource Work Rate <docs/outsource_work_rate/02-edit.html>`_
+* `Delete Outsource Work Rate <docs/outsource_work_rate/03-delete.html>`_
+* `Confirm Outsource Work Rate <docs/outsource_work_rate/04-confirm.html>`_
+* `Approve Outsource Work Rate <docs/outsource_work_rate/05-approve.html>`_
+* `Reject Outsource Work Rate <docs/outsource_work_rate/06-reject.html>`_
+* `Restart Approval Process — Outsource Work Rate <docs/outsource_work_rate/07-restart-approval.html>`_
+* `Open Outsource Work Rate <docs/outsource_work_rate/08-open.html>`_
+* `Done Outsource Work Rate <docs/outsource_work_rate/09-done.html>`_
+* `Cancel Outsource Work Rate <docs/outsource_work_rate/10-cancel.html>`_
+* `Restart Outsource Work Rate <docs/outsource_work_rate/12-restart.html>`_
+
+
 Installation
 ============
 
