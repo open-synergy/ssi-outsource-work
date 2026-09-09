@@ -1,6 +1,6 @@
 # Reject Outsource Work Outstanding
 
-> **Module:** ssi_outsource_work
+> **Module:** `ssi_outsource_work`
 >
 > **Model:** `outsource_work_outstanding`
 >
