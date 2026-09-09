@@ -4,8 +4,20 @@
 
 from odoo import api, fields, models
 
+from odoo.addons.ssi_decorator import ssi_decorator
+
 
 class OutsourceWorkRate(models.Model):
+    """
+    Represents the outsourced work billing rate agreed with a partner.
+
+    Each record defines the price list to apply per outsourced product for
+    a given partner and validity period. It goes through a confirm/approve
+    workflow (``draft`` -> ``confirm`` -> ``ready``) before it can be opened
+    (``open``) and finally closed (``done``), so downstream documents can
+    rely on a rate that has been reviewed and approved.
+    """
+
     _name = "outsource_work_rate"
     _description = "Outsource Work Rate"
     _inherit = [
@@ -124,3 +136,9 @@ class OutsourceWorkRate(models.Model):
         ]
         res += policy_field
         return res
+
+    @ssi_decorator.insert_on_form_view()
+    def _insert_form_element(self, view_arch):
+        if self._automatically_insert_view_element:
+            view_arch = self._reconfigure_statusbar_visible(view_arch)
+        return view_arch

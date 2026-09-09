@@ -1,5 +1,5 @@
 scenarios:
-  - name: "OutsourceWorkRate - Create and Confirm Workflow"
+  - name: "OutsourceWorkRate - Create, Confirm, Approve, Open, Done"
     steps:
       - step: "Setup - create partner"
         action: "create"
@@ -9,15 +9,33 @@ scenarios:
           name: "Test Rate Partner"
           is_company: false
 
+      - step: "Setup - create product"
+        action: "create"
+        model: "product.product"
+        save_as: "product"
+        values:
+          name: "Test Rate Product"
+          type: "service"
+
+      - step: "Setup - get default price list"
+        action: "ref"
+        xml_id: "product.list0"
+        save_as: "pricelist"
+
       - step: "Create outsource work rate in draft"
         action: "create"
         model: "outsource_work_rate"
         save_as: "rate"
         as_user: "base.user_admin"
         values:
-          partner_id: "EVAL: registry['partner'].id"
+          partner_id: "REC: partner.id"
           date: "2024-01-01"
           date_start: "2024-01-01"
+          detail_ids:
+            - - 0
+              - 0
+              - product_id: "REC: product.id"
+                pricelist_id: "REC: pricelist.id"
 
       - step: "Assert rate in draft"
         action: "assert"
@@ -33,15 +51,158 @@ scenarios:
         method: "action_confirm"
         as_user: "base.user_admin"
 
-      - step: "Invalidate cache after confirm"
-        action: "call"
-        target: "rate"
-        method: "invalidate_cache"
-
-      - step: "Assert rate confirmed"
+      - step: "Assert rate waiting for approval"
         action: "assert"
         target: "rate"
+        refresh: true
         asserts:
           state:
             type: "value"
             expected: "confirm"
+
+      - step: "Approve rate"
+        action: "call"
+        target: "rate"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Assert rate moved to ready after approval"
+        action: "assert"
+        target: "rate"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "ready"
+          name:
+            type: "value"
+            operator: "not_equals"
+            expected: "/"
+
+      - step: "Open rate"
+        action: "call"
+        target: "rate"
+        method: "action_open"
+        as_user: "base.user_admin"
+
+      - step: "Assert rate in progress"
+        action: "assert"
+        target: "rate"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "open"
+
+      - step: "Done rate"
+        action: "call"
+        target: "rate"
+        method: "action_done"
+        as_user: "base.user_admin"
+
+      - step: "Assert rate done"
+        action: "assert"
+        target: "rate"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+  - name: "OutsourceWorkRate - Reject from Confirm"
+    steps:
+      - step: "Setup - create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Test Rate Partner Reject"
+          is_company: false
+
+      - step: "Setup - create product"
+        action: "create"
+        model: "product.product"
+        save_as: "product"
+        values:
+          name: "Test Rate Product Reject"
+          type: "service"
+
+      - step: "Setup - get default price list"
+        action: "ref"
+        xml_id: "product.list0"
+        save_as: "pricelist"
+
+      - step: "Create outsource work rate in draft"
+        action: "create"
+        model: "outsource_work_rate"
+        save_as: "rate"
+        as_user: "base.user_admin"
+        values:
+          partner_id: "REC: partner.id"
+          date: "2024-01-01"
+          date_start: "2024-01-01"
+          detail_ids:
+            - - 0
+              - 0
+              - product_id: "REC: product.id"
+                pricelist_id: "REC: pricelist.id"
+
+      - step: "Confirm rate"
+        action: "call"
+        target: "rate"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Reject rate"
+        action: "call"
+        target: "rate"
+        method: "action_reject_approval"
+        as_user: "base.user_admin"
+
+      - step: "Assert rate rejected, not ready"
+        action: "assert"
+        target: "rate"
+        refresh: true
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+
+  - name: "OutsourceWorkRate - Negative: partner_id required"
+    steps:
+      - step: "Form save without partner_id must be rejected"
+        action: "form"
+        model: "outsource_work_rate"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "AssertionError"
+          message_contains: "is a required field"
+        values:
+          date: "2024-01-01"
+          date_start: "2024-01-01"
+
+  - name: "OutsourceWorkRate - Negative: date_start required"
+    steps:
+      - step: "Setup - create partner"
+        action: "create"
+        model: "res.partner"
+        save_as: "partner"
+        values:
+          name: "Test Rate Partner No Date Start"
+          is_company: false
+
+      - step: "Form save without date_start must be rejected"
+        action: "form"
+        model: "outsource_work_rate"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "AssertionError"
+          message_contains: "is a required field"
+        values:
+          partner_id: "REC: partner"
+          date: "2024-01-01"
