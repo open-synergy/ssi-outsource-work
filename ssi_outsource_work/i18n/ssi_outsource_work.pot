@@ -35,9 +35,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__name
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__name
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__name
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "# Document"
 msgstr ""
 
@@ -47,19 +44,10 @@ msgid "# Invoice"
 msgstr ""
 
 #. module: ssi_outsource_work
-#: code:addons/ssi_outsource_work/controllers/portal.py:0
-#, python-format
-msgid "# Outsource Work"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: code:addons/ssi_outsource_work/controllers/portal.py:0
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__outstanding_id
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch_detail__outstanding_id
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_tax__outstanding_id
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-#, python-format
 msgid "# Outstanding"
 msgstr ""
 
@@ -72,174 +60,6 @@ msgstr ""
 #. module: ssi_outsource_work
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
 msgid "#Batch"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<small class=\"text-right\">Status:</small>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid ""
-"<span class=\" badge badge-pill badge-info\" title=\"Current stage of this "
-"assignment request\">Cancelled</span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid ""
-"<span class=\" badge badge-pill badge-info\" title=\"Current stage of this "
-"assignment request\">Done</span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid ""
-"<span class=\" badge badge-pill badge-info\" title=\"Current stage of this "
-"assignment request\">Draft</span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-msgid ""
-"<span class=\" badge badge-pill badge-info\" title=\"Current stage of this "
-"assignment request\">Rejected</span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid ""
-"<span class=\" badge badge-pill badge-info\" title=\"Current stage of this "
-"assignment request\">Waiting for Apporval</span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid ""
-"<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\""
-" aria-label=\"Cancelled\" title=\"Cancelled\" role=\"img\"/><span "
-"class=\"d-none d-md-inline\">Cancelled</span></span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid ""
-"<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\""
-" aria-label=\"Done\" title=\"Done\" role=\"img\"/><span class=\"d-none d-md-"
-"inline\">Done</span></span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid ""
-"<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\""
-" aria-label=\"Draft\" title=\"Draft\" role=\"img\"/><span class=\"d-none "
-"d-md-inline\">Draft</span></span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid ""
-"<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\""
-" aria-label=\"Rejected\" title=\"Rejected\" role=\"img\"/><span "
-"class=\"d-none d-md-inline\">Rejected</span></span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid ""
-"<span class=\"badge badge-pill badge-info\"><i class=\"fa fa-fw fa-clock-o\""
-" aria-label=\"Waiting for Approval\" title=\"Waiting for Approval\" "
-"role=\"img\"/><span class=\"d-none d-md-inline\">Waiting for "
-"Approval</span></span>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong># Document:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-msgid "<strong># Outstanding:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Date Due:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Date End:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Date Start:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Date:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-msgid "<strong>Document Reference:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-msgid "<strong>Document Type:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Message and communication history</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-msgid "<strong>Notes</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Paid:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Residual:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Tax:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Total:</strong>"
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-msgid "<strong>Untaxed:</strong>"
 msgstr ""
 
 #. module: ssi_outsource_work
@@ -396,8 +216,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Analytic Account"
 msgstr ""
 
@@ -653,9 +471,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Date"
 msgstr ""
 
@@ -664,7 +479,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__date_due
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
 msgid "Date Due"
 msgstr ""
 
@@ -673,7 +487,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__date_end
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
 msgid "Date End"
 msgstr ""
 
@@ -682,7 +495,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__date_start
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
 msgid "Date Start"
 msgstr ""
 
@@ -712,15 +524,11 @@ msgstr ""
 
 #. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__work_object_reference
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Document Reference"
 msgstr ""
 
 #. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__model_id
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Document Type"
 msgstr ""
 
@@ -1025,13 +833,6 @@ msgid "Need Validation"
 msgstr ""
 
 #. module: ssi_outsource_work
-#: code:addons/ssi_outsource_work/controllers/portal.py:0
-#: code:addons/ssi_outsource_work/controllers/portal.py:0
-#, python-format
-msgid "Newest"
-msgstr ""
-
-#. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__activity_date_deadline
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__activity_date_deadline
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__activity_date_deadline
@@ -1136,7 +937,6 @@ msgstr ""
 #: model:ir.ui.menu,name:ssi_outsource_work.menu_root_outsource_work
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.ir_model_form
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_template
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work
 msgid "Outsource Work"
 msgstr ""
 
@@ -1189,7 +989,6 @@ msgstr ""
 #: model:ir.model,name:ssi_outsource_work.model_outsource_work_outstanding
 #: model:ir.module.category,name:ssi_outsource_work.outsource_work_outstanding_data_ownership_module_category
 #: model:ir.module.category,name:ssi_outsource_work.outsource_work_outstanding_workflow_module_category
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
 msgid "Outsource Work Outstanding"
 msgstr ""
 
@@ -1217,13 +1016,6 @@ msgid "Outsource Work Outstanding Type"
 msgstr ""
 
 #. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_layout_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_home_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-msgid "Outsource Work Outstandings"
-msgstr ""
-
-#. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_ir_model__outsource_work_pricelist_selection_method
 msgid "Outsource Work Pricelist Selection Method"
 msgstr ""
@@ -1248,9 +1040,6 @@ msgstr ""
 #. module: ssi_outsource_work
 #: model:ir.actions.act_window,name:ssi_outsource_work.outsource_work_action
 #: model:ir.ui.menu,name:ssi_outsource_work.outsource_work_menu
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_layout_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_home_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Outsource Works"
 msgstr ""
 
@@ -1518,12 +1307,6 @@ msgid "State"
 msgstr ""
 
 #. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid "Status"
-msgstr ""
-
-#. module: ssi_outsource_work
 #: model:ir.model.fields,help:ssi_outsource_work.field_outsource_work__activity_state
 #: model:ir.model.fields,help:ssi_outsource_work.field_outsource_work_outstanding__activity_state
 #: model:ir.model.fields,help:ssi_outsource_work.field_outsource_work_outstanding_batch__activity_state
@@ -1542,7 +1325,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__amount_tax
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__amount_tax
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_tax__tax_id
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
 msgid "Tax"
 msgstr ""
 
@@ -1562,24 +1344,11 @@ msgid "Taxes"
 msgstr ""
 
 #. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-msgid "There are no Outsource Work Outstandings."
-msgstr ""
-
-#. module: ssi_outsource_work
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
-msgid "There are no Outsource Works."
-msgstr ""
-
-#. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work__price_total
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__amount_total
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__amount_total
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_tree
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_tree
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Total"
 msgstr ""
 
@@ -1617,8 +1386,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_batch_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_outstanding_view_search
 #: model_terms:ir.ui.view,arch_db:ssi_outsource_work.outsource_work_view_search
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstanding
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_works
 msgid "Type"
 msgstr ""
 
@@ -1660,7 +1427,6 @@ msgstr ""
 #. module: ssi_outsource_work
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding__amount_untaxed
 #: model:ir.model.fields,field_description:ssi_outsource_work.field_outsource_work_outstanding_batch__amount_untaxed
-#: model_terms:ir.ui.view,arch_db:ssi_outsource_work.portal_my_outsource_work_outstandings
 msgid "Untaxed"
 msgstr ""
 
