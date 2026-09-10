@@ -1,5 +1,5 @@
-# Copyright 2023 OpenSynergy Indonesia
-# Copyright 2023 PT. Simetri Sinergi Indonesia
+# Copyright 2026 OpenSynergy Indonesia
+# Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
@@ -87,7 +87,7 @@ class CustomerPortal(CustomerPortal):
         :param date_end: upper bound filter on ``create_date``
         :param sortby: sort key, one of the ``searchbar_sortings`` keys
         :return: rendered response for
-            ``ssi_outsource_work.portal_my_outsource_work_outstandings``
+            ``ssi_outsource_work_portal.portal_my_outsource_work_outstandings``
         """
         values = self._prepare_portal_layout_values()
         Outstanding = request.env["outsource_work_outstanding"]
@@ -139,7 +139,7 @@ class CustomerPortal(CustomerPortal):
             }
         )
         return request.render(
-            "ssi_outsource_work.portal_my_outsource_work_outstandings", values
+            "ssi_outsource_work_portal.portal_my_outsource_work_outstandings", values
         )
 
     @http.route(
@@ -171,7 +171,7 @@ class CustomerPortal(CustomerPortal):
         )
         values.update({"access_token": values.get("access_token", access_token)})
         return request.render(
-            "ssi_outsource_work.portal_my_outsource_work_outstanding", values
+            "ssi_outsource_work_portal.portal_my_outsource_work_outstanding", values
         )
 
     def _outsource_work_get_page_view_values(
@@ -216,7 +216,7 @@ class CustomerPortal(CustomerPortal):
         :param date_end: upper bound filter on ``create_date``
         :param sortby: sort key, one of the ``searchbar_sortings`` keys
         :return: rendered response for
-            ``ssi_outsource_work.portal_my_outsource_works``
+            ``ssi_outsource_work_portal.portal_my_outsource_works``
         """
         values = self._prepare_portal_layout_values()
         OutsourceWork = request.env["outsource_work"]
@@ -265,7 +265,9 @@ class CustomerPortal(CustomerPortal):
                 "sortby": sortby,
             }
         )
-        return request.render("ssi_outsource_work.portal_my_outsource_works", values)
+        return request.render(
+            "ssi_outsource_work_portal.portal_my_outsource_works", values
+        )
 
     @http.route(
         ["/my/outsource-work/<int:outsource_work_id>"],
@@ -293,4 +295,6 @@ class CustomerPortal(CustomerPortal):
             outsource_work_sudo, access_token, **kw
         )
         values.update({"access_token": values.get("access_token", access_token)})
-        return request.render("ssi_outsource_work.portal_my_outsource_work", values)
+        return request.render(
+            "ssi_outsource_work_portal.portal_my_outsource_work", values
+        )
