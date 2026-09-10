@@ -4,14 +4,13 @@
 
 {
     "name": "Outsource Work",
-    "version": "14.0.1.16.1",
+    "version": "14.0.1.17.0",
     "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "AGPL-3",
     "installable": True,
     "application": True,
     "depends": [
-        "website",
         "ssi_financial_accounting",
         "ssi_master_data_mixin",
         "ssi_transaction_confirm_mixin",
@@ -38,11 +37,9 @@
         "views/outsource_work_type_category_views.xml",
         "views/outsource_work_type_views.xml",
         "views/outsource_work_views.xml",
-        "views/outsource_work_portal_templates.xml",
         "views/outsource_work_outstanding_type_views.xml",
         "views/outsource_work_outstanding_views.xml",
         "views/outsource_work_outstanding_batch_views.xml",
-        "views/outsource_work_outstanding_portal_templates.xml",
         "views/assets.xml",
     ],
     "demo": [],

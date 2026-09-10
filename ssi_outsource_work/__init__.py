@@ -4,7 +4,6 @@
 
 from . import (
     models,
-    controllers,
 )
 
 from . import tests  # noqa: F401
