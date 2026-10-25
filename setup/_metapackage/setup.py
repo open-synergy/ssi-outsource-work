@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo14-addon-ssi_outsource_work',
         'odoo14-addon-ssi_outsource_work_acceptance',
+        'odoo14-addon-ssi_outsource_work_acceptance_operating_unit',
         'odoo14-addon-ssi_outsource_work_operating_unit',
         'odoo14-addon-ssi_outsource_work_portal',
         'odoo14-addon-ssi_outsource_work_rate',

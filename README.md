@@ -20,6 +20,7 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [ssi_outsource_work](ssi_outsource_work/) | 14.0.1.17.1 |  | Outsource Work
 [ssi_outsource_work_acceptance](ssi_outsource_work_acceptance/) | 14.0.1.0.1 |  | Outsource Work Acceptance
+[ssi_outsource_work_acceptance_operating_unit](ssi_outsource_work_acceptance_operating_unit/) | 14.0.1.0.1 |  | Outsource Work Acceptance + Operating Unit
 [ssi_outsource_work_operating_unit](ssi_outsource_work_operating_unit/) | 14.0.1.0.0 |  | Outsource Work + Operating Unit
 [ssi_outsource_work_portal](ssi_outsource_work_portal/) | 14.0.1.0.0 |  | Outsource Work Portal
 [ssi_outsource_work_rate](ssi_outsource_work_rate/) | 14.0.1.4.0 |  | Outsource Work Rate
