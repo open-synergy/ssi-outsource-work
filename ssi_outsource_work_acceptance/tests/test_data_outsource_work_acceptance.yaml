@@ -99,7 +99,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
@@ -109,7 +108,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 2"
                 uom_quantity: 1.0
                 price_unit: 50000.0
                 account_id: "REC: account.id"
@@ -158,7 +156,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
@@ -168,7 +165,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 2"
                 uom_quantity: 1.0
                 price_unit: 50000.0
                 account_id: "REC: account.id"
@@ -261,7 +257,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
@@ -271,7 +266,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 2"
                 uom_quantity: 1.0
                 price_unit: 50000.0
                 account_id: "REC: account.id"
@@ -364,7 +358,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
@@ -374,7 +367,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 2"
                 uom_quantity: 1.0
                 price_unit: 50000.0
                 account_id: "REC: account.id"
@@ -471,7 +463,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
@@ -491,7 +482,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line B"
                 uom_quantity: 1.0
                 price_unit: 25000.0
                 account_id: "REC: account.id"
@@ -517,7 +507,6 @@ scenarios:
               - model_id: "REC: owa_model.id"
                 partner_id: "REC: partner.id"
                 type_id: "REC: work_type.id"
-                name: "Line 1"
                 uom_quantity: 1.0
                 price_unit: 100000.0
                 account_id: "REC: account.id"
