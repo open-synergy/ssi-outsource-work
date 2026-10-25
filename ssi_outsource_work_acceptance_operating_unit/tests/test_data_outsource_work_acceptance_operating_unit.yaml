@@ -1,0 +1,199 @@
+options:
+  auto_refresh: true
+
+setup:
+  steps:
+    - step: "Get internal user group"
+      action: "ref"
+      xml_id: "base.group_user"
+      save_as: "grp_internal"
+
+    - step: "Get outsource work acceptance user group"
+      action: "ref"
+      xml_id: "ssi_outsource_work_acceptance.outsource_work_acceptance_user_group"
+      save_as: "grp_acceptance_user"
+
+    - step: "Get outsource work acceptance operating unit group"
+      action: "ref"
+      xml_id: "ssi_outsource_work_acceptance_operating_unit.outsource_work_acceptance_ou_group"
+      save_as: "grp_acceptance_ou"
+
+    # `setup:` replays before every scenario inside the same transaction
+    # (no rollback in between), so a fixed code or login would collide
+    # with the previous scenario's record on the 2nd and later replay.
+    # Generate a fresh, never-colliding value on each replay.
+    - step: "Create partner for operating unit A"
+      action: "create"
+      model: "res.partner"
+      save_as: "ou_a_partner"
+      values:
+        name: "Test OWA OU-A Partner"
+
+    - step: "Create operating unit A"
+      action: "create"
+      model: "operating.unit"
+      save_as: "ou_a"
+      values:
+        name: "EVAL: 'Test OWA OU-A %d' % env['operating.unit'].search_count([])"
+        code: "EVAL: 'OWAOUA%d' % env['operating.unit'].search_count([])"
+        partner_id: "REC: ou_a_partner.id"
+
+    - step: "Create partner for operating unit B"
+      action: "create"
+      model: "res.partner"
+      save_as: "ou_b_partner"
+      values:
+        name: "Test OWA OU-B Partner"
+
+    - step: "Create operating unit B"
+      action: "create"
+      model: "operating.unit"
+      save_as: "ou_b"
+      values:
+        name: "EVAL: 'Test OWA OU-B %d' % env['operating.unit'].search_count([])"
+        code: "EVAL: 'OWAOUB%d' % env['operating.unit'].search_count([])"
+        partner_id: "REC: ou_b_partner.id"
+
+    - step: "Create user assigned to operating unit A"
+      action: "create"
+      model: "res.users"
+      save_as: "user_a"
+      values:
+        name: "Acceptance OU-A Rule User"
+        login: "EVAL: 'owa_ou_a_rule_user_%d' % env['res.users'].search_count([])"
+        groups_id:
+          - - 6
+            - 0
+            - - "REC: grp_internal.id"
+              - "REC: grp_acceptance_user.id"
+              - "REC: grp_acceptance_ou.id"
+        default_operating_unit_id: "REC: ou_a.id"
+        assigned_operating_unit_ids:
+          - - 6
+            - 0
+            - - "REC: ou_a.id"
+
+    - step: "Create user assigned to operating unit B"
+      action: "create"
+      model: "res.users"
+      save_as: "user_b"
+      values:
+        name: "Acceptance OU-B Rule User"
+        login: "EVAL: 'owa_ou_b_rule_user_%d' % env['res.users'].search_count([])"
+        groups_id:
+          - - 6
+            - 0
+            - - "REC: grp_internal.id"
+              - "REC: grp_acceptance_user.id"
+              - "REC: grp_acceptance_ou.id"
+        default_operating_unit_id: "REC: ou_b.id"
+        assigned_operating_unit_ids:
+          - - 6
+            - 0
+            - - "REC: ou_b.id"
+
+    - step: "Create analytic account"
+      action: "create"
+      model: "account.analytic.account"
+      save_as: "analytic_account"
+      values:
+        name: "Test OWA OU Analytic Account"
+
+    - step: "Create pricelist"
+      action: "create"
+      model: "product.pricelist"
+      save_as: "pricelist"
+      values:
+        name: "Test OWA OU Pricelist"
+        currency_id: "REF: base.USD"
+
+scenarios:
+  - name: "OutsourceWorkAcceptance - Operating unit is stored on the document"
+    steps:
+      - step: "Create acceptance with an explicit operating unit"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance_explicit"
+        values:
+          analytic_account_id: "REC: analytic_account.id"
+          date: "2024-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          operating_unit_id: "REC: ou_a.id"
+
+      - step: "Acceptance is scoped to operating unit A"
+        action: "assert"
+        target: "acceptance_explicit"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected: "REC: ou_a"
+
+  - name: "OutsourceWorkAcceptance - Operating unit defaults to the user's"
+    steps:
+      - step: "Create acceptance as the user of operating unit B"
+        action: "create"
+        model: "outsource_work_acceptance"
+        as_user: "user_b"
+        save_as: "acceptance_default"
+        values:
+          analytic_account_id: "REC: analytic_account.id"
+          date: "2024-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+
+      - step: "Acceptance takes the default operating unit of its creator"
+        action: "assert"
+        target: "acceptance_default"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected: "REC: ou_b"
+
+  - name: "OutsourceWorkAcceptance - Operating unit record rule scopes access"
+    steps:
+      - step: "Create acceptance of operating unit A, owned by a third user"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "rule_acceptance"
+        values:
+          analytic_account_id: "REC: analytic_account.id"
+          date: "2024-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          operating_unit_id: "REC: ou_a.id"
+          user_id: "REF: base.user_admin"
+
+      - step: "Acceptance is scoped to operating unit A"
+        action: "assert"
+        target: "rule_acceptance"
+        asserts:
+          operating_unit_id:
+            type: "m2o"
+            expected: "REC: ou_a"
+
+      - step: "Truth gate: the document owner is neither of the two test users"
+        action: "assert"
+        target: "rule_acceptance"
+        asserts:
+          user_id:
+            type: "m2o"
+            expected_xml_id: "base.user_admin"
+
+      - step: "User of the same operating unit can see it"
+        action: "search"
+        model: "outsource_work_acceptance"
+        as_user: "user_a"
+        domain:
+          - ["id", "=", "REC: rule_acceptance.id"]
+        save_as: "seen_by_a"
+        expect_count: 1
+
+      - step: "User of a different operating unit cannot see it"
+        action: "search"
+        model: "outsource_work_acceptance"
+        as_user: "user_b"
+        domain:
+          - ["id", "=", "REC: rule_acceptance.id"]
+        save_as: "seen_by_b"
+        expect_count: 0
