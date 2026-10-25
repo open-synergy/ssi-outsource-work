@@ -1,0 +1,563 @@
+options:
+  auto_refresh: true
+
+setup:
+  steps:
+    - step: "Create outsource work type category"
+      action: "create"
+      model: "outsource_work_type_category"
+      save_as: "category"
+      values:
+        name: "Test OWA Category"
+        code: "EVAL: 'OWAC%d' % env['outsource_work_type_category'].search_count([])"
+
+    - step: "Search a product for the work type"
+      action: "search"
+      model: "product.product"
+      domain: [["sale_ok", "=", true]]
+      save_as: "product"
+      limit: 1
+
+    - step: "Create outsource work type"
+      action: "create"
+      model: "outsource_work_type"
+      save_as: "work_type"
+      values:
+        name: "Test OWA Work Type"
+        code: "EVAL: 'OWAT%d' % env['outsource_work_type'].search_count([])"
+        category_id: "REC: category.id"
+        product_id: "REC: product.id"
+
+    - step: "Create partner"
+      action: "create"
+      model: "res.partner"
+      save_as: "partner"
+      values:
+        name: "Test OWA Partner"
+
+    - step: "Create analytic account A"
+      action: "create"
+      model: "account.analytic.account"
+      save_as: "aa_a"
+      values:
+        name: "Test OWA Analytic A"
+
+    - step: "Create analytic account B"
+      action: "create"
+      model: "account.analytic.account"
+      save_as: "aa_b"
+      values:
+        name: "Test OWA Analytic B"
+
+    - step: "Create pricelist"
+      action: "create"
+      model: "product.pricelist"
+      save_as: "pricelist"
+      values:
+        name: "Test OWA Pricelist"
+        currency_id: "REF: base.USD"
+
+    - step: "Search an account for the lines"
+      action: "search"
+      model: "account.account"
+      domain: [["internal_type", "=", "other"], ["deprecated", "=", false]]
+      save_as: "account"
+      limit: 1
+
+    - step: "Search the acceptance model"
+      action: "search"
+      model: "ir.model"
+      domain: [["model", "=", "outsource_work_acceptance"]]
+      save_as: "owa_model"
+      limit: 1
+
+    - step: "Create cancel reason"
+      action: "create"
+      model: "base.cancel_reason"
+      save_as: "reason"
+      values:
+        name: "Test OWA Cancel Reason"
+        code: "EVAL: 'OWAR%d' % env['base.cancel_reason'].search_count([])"
+        global_use: true
+
+scenarios:
+  - name: "OutsourceWorkAcceptance - Totals and allowed analytic account"
+    steps:
+      - step: "Create acceptance with lines"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 2"
+                uom_quantity: 1.0
+                price_unit: 50000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Assert totals, reconciled flag and allowed analytic accounts"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          amount_untaxed:
+            type: "value"
+            expected: 150000.0
+          amount_tax:
+            type: "value"
+            expected: 0.0
+          amount_total:
+            type: "value"
+            expected: 150000.0
+          reconciled:
+            type: "value"
+            expected: false
+          allowed_analytic_account_ids:
+            type: "m2m"
+            check: "exact"
+            expected_records:
+              - "REC: aa_a"
+
+  - name: "OutsourceWorkAcceptance - Confirm then approve cascades to lines"
+    steps:
+      - step: "Create acceptance with lines"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 2"
+                uom_quantity: 1.0
+                price_unit: 50000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Find the line1 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 100000.0]
+        save_as: "line1"
+        limit: 1
+      - step: "Find the line2 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 50000.0]
+        save_as: "line2"
+        limit: 1
+
+      - step: "Confirm acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Lines follow confirm - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+      - step: "Lines follow confirm - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Approve acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+      - step: "Lines follow approve - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+      - step: "Lines follow approve - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+  - name: "OutsourceWorkAcceptance - Confirm then reject cascades to lines"
+    steps:
+      - step: "Create acceptance with lines"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 2"
+                uom_quantity: 1.0
+                price_unit: 50000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Find the line1 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 100000.0]
+        save_as: "line1"
+        limit: 1
+      - step: "Find the line2 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 50000.0]
+        save_as: "line2"
+        limit: 1
+
+      - step: "Confirm acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Lines follow confirm - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+      - step: "Lines follow confirm - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Reject acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_reject_approval"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+
+      - step: "Lines follow reject - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+      - step: "Lines follow reject - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
+
+  - name: "OutsourceWorkAcceptance - Cancel from draft through wizard then restart"
+    steps:
+      - step: "Create acceptance with lines"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 2"
+                uom_quantity: 1.0
+                price_unit: 50000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Find the line1 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 100000.0]
+        save_as: "line1"
+        limit: 1
+      - step: "Find the line2 of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+          - ["price_unit", "=", 50000.0]
+        save_as: "line2"
+        limit: 1
+
+      - step: "Cancel the acceptance through the reason wizard"
+        action: "wizard"
+        model: "base.select_cancel_reason"
+        target: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          cancel_reason_id: "REC: reason"
+        method: "action_confirm"
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+
+      - step: "Lines follow cancel - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+      - step: "Lines follow cancel - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+
+      - step: "Restart acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_restart"
+        as_user: "base.user_admin"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Lines follow restart - line1"
+        action: "assert"
+        target: "line1"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+      - step: "Lines follow restart - line2"
+        action: "assert"
+        target: "line2"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+  - name:
+      "OutsourceWorkAcceptance - Line with another analytic account is rejected on save"
+    steps:
+      - step: "Create acceptance with one line"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Adding a line of analytic account B is rejected"
+        action: "write"
+        target: "acceptance"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "ValidationError"
+          message_contains: "different analytic account"
+        values:
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line B"
+                uom_quantity: 1.0
+                price_unit: 25000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_b.id"
+
+  - name:
+      "OutsourceWorkAcceptance - Confirm is blocked when a line was moved to another
+      analytic account"
+    steps:
+      - step: "Create acceptance with one line"
+        action: "create"
+        model: "outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_a.id"
+          date: "2026-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REC: pricelist.id"
+          outsource_work_ids:
+            - - 0
+              - 0
+              - model_id: "REC: owa_model.id"
+                partner_id: "REC: partner.id"
+                type_id: "REC: work_type.id"
+                name: "Line 1"
+                uom_quantity: 1.0
+                price_unit: 100000.0
+                account_id: "REC: account.id"
+                analytic_account_id: "REC: aa_a.id"
+
+      - step: "Find the line of the acceptance"
+        action: "search"
+        model: "outsource_work"
+        domain:
+          - ["work_object_id", "=", "REC: acceptance.id"]
+          - ["model_name", "=", "outsource_work_acceptance"]
+        save_as: "line1"
+        limit: 1
+
+      - step: "Move the line to analytic account B directly on the line"
+        action: "write"
+        target: "line1"
+        as_user: "base.user_admin"
+        values:
+          analytic_account_id: "REC: aa_b.id"
+
+      - step: "Confirm is rejected"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "UserError"
+          message_contains: "different analytic account"
+
+  - name: "OutsourceWorkAcceptance - Header without analytic account is rejected"
+    steps:
+      - step: "Saving the form without analytic account fails"
+        action: "form"
+        model: "outsource_work_acceptance"
+        as_user: "base.user_admin"
+        expect_error:
+          type: "AssertionError"
+          message_contains: "analytic_account_id is a required field"
+        values:
+          date: "EVAL: date(2026, 1, 15)"
+          currency_id: "RECORDSET: base.USD"
+          pricelist_id: "REC: pricelist"
