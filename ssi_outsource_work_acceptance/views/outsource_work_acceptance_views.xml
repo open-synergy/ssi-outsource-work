@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="outsource_work_acceptance_view_search" model="ir.ui.view">
+    <field name="name">outsource_work_acceptance - search</field>
+    <field name="model">outsource_work_acceptance</field>
+    <field
+            name="inherit_id"
+            ref="ssi_transaction_mixin.mixin_transaction_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="analytic_account_id" />
+                <field name="date" />
+            </xpath>
+            <xpath expr="//group[@name='group_by']" position="before">
+                <separator />
+                <filter
+                        name="dom_paid"
+                        string="All Paid"
+                        domain="[('reconciled','=',True)]"
+                    />
+                <filter
+                        name="dom_unpaid"
+                        string="All/Some Unpaid"
+                        domain="[('reconciled','=',False)]"
+                    />
+            </xpath>
+            <xpath expr="//filter[@name='grp_state']" position="after">
+                <filter
+                        name="grp_analytic_account"
+                        string="Analytic Account"
+                        context="{'group_by':'analytic_account_id'}"
+                    />
+                <filter name="grp_date" string="Date" context="{'group_by':'date'}" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="outsource_work_acceptance_view_tree" model="ir.ui.view">
+    <field name="name">outsource_work_acceptance -tree</field>
+    <field name="model">outsource_work_acceptance</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_tree" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='display_name']" position="after">
+                <field name="analytic_account_id" />
+                <field name="date" />
+                <field name="currency_id" />
+                <field name="pricelist_id" />
+                <field name="amount_untaxed" />
+                <field name="amount_tax" />
+                <field name="amount_total" />
+                <field name="reconciled" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="outsource_work_acceptance_view_form" model="ir.ui.view">
+    <field name="name">outsource_work_acceptance - form</field>
+    <field name="model">outsource_work_acceptance</field>
+    <field name="mode">primary</field>
+    <field name="inherit_id" ref="ssi_transaction_mixin.mixin_transaction_view_form" />
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//group[@name='header_left']" position="inside">
+                <field name="analytic_account_id" />
+            </xpath>
+            <xpath expr="//group[@name='header_right']" position="inside">
+                <field name="date" />
+                <field name="currency_id" />
+                <field name="pricelist_id" />
+            </xpath>
+            <xpath expr="//group[@name='footer_left']" position="inside">
+                <field name="amount_untaxed" />
+                <field name="amount_tax" />
+                <field name="amount_total" />
+                <field name="reconciled" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="outsource_work_acceptance_action" model="ir.actions.act_window">
+    <field name="name">Outsource Work Acceptances</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">outsource_work_acceptance</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="menu_outsource_work_acceptance"
+        name="Outsource Work Acceptances"
+        parent="ssi_outsource_work.menu_root_outsource_work"
+        action="outsource_work_acceptance_action"
+        groups="outsource_work_acceptance_viewer_group"
+        sequence="40"
+    />
+
+</odoo>
