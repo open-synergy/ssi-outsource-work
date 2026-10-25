@@ -5,6 +5,34 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
 
     var tour = require("web_tour.tour");
 
+    /**
+     * Build a step that reveals a navbar section even when it overflows.
+     *
+     * When the navbar is too narrow, Odoo moves the last sections into the
+     * ``o_extra_menu_items`` dropdown, where nested dropdowns are always
+     * shown once it is open. The step matches either the section itself
+     * (visible in the bar) or the overflow toggle (section hidden).
+     *
+     * @param {String} content Step description.
+     * @param {String} xmlid Section menu xmlid.
+     * @param {Boolean} clickSection Click the section when it is in the bar.
+     * @returns {Object} The tour step.
+     */
+    function openMenuSectionStep(content, xmlid, clickSection) {
+        var section = '.o_menu_sections [data-menu-xmlid="' + xmlid + '"]';
+        var toggle = ".o_menu_sections .o_extra_menu_items > a.dropdown-toggle";
+        return {
+            content: content,
+            trigger: section + ", " + toggle,
+            run: function () {
+                var $anchor = this.$anchor;
+                if ($anchor.is(toggle) || clickSection) {
+                    $anchor[0].click();
+                }
+            },
+        };
+    }
+
     // IK: docs/outsource_work_outstanding_type/01-create.md
     tour.register(
         "ssi_outsource_work_outsource_work_outstanding_type_create",
@@ -21,11 +49,11 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
                 trigger:
                     '.o_app[data-menu-xmlid="ssi_outsource_work.menu_root_outsource_work"]',
             },
-            {
-                content: "Open the Configuration menu",
-                trigger:
-                    '.o_menu_sections [data-menu-xmlid="ssi_outsource_work.menu_outsource_work_configuration"]',
-            },
+            openMenuSectionStep(
+                "Open the Configuration menu",
+                "ssi_outsource_work.menu_outsource_work_configuration",
+                true
+            ),
             {
                 content: "Open the Outstanding Types menu",
                 trigger:
@@ -123,11 +151,11 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
                 trigger:
                     '.o_app[data-menu-xmlid="ssi_outsource_work.menu_root_outsource_work"]',
             },
-            {
-                content: "Open the Configuration menu",
-                trigger:
-                    '.o_menu_sections [data-menu-xmlid="ssi_outsource_work.menu_outsource_work_configuration"]',
-            },
+            openMenuSectionStep(
+                "Open the Configuration menu",
+                "ssi_outsource_work.menu_outsource_work_configuration",
+                true
+            ),
             {
                 content: "Open the Outstanding Types menu",
                 trigger:
@@ -203,11 +231,11 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
                 trigger:
                     '.o_app[data-menu-xmlid="ssi_outsource_work.menu_root_outsource_work"]',
             },
-            {
-                content: "Open the Configuration menu",
-                trigger:
-                    '.o_menu_sections [data-menu-xmlid="ssi_outsource_work.menu_outsource_work_configuration"]',
-            },
+            openMenuSectionStep(
+                "Open the Configuration menu",
+                "ssi_outsource_work.menu_outsource_work_configuration",
+                true
+            ),
             {
                 content: "Open the Outstanding Types menu",
                 trigger:
@@ -294,11 +322,11 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
                 trigger:
                     '.o_app[data-menu-xmlid="ssi_outsource_work.menu_root_outsource_work"]',
             },
-            {
-                content: "Open the Configuration menu",
-                trigger:
-                    '.o_menu_sections [data-menu-xmlid="ssi_outsource_work.menu_outsource_work_configuration"]',
-            },
+            openMenuSectionStep(
+                "Open the Configuration menu",
+                "ssi_outsource_work.menu_outsource_work_configuration",
+                true
+            ),
             {
                 content: "Open the Outstanding Types menu",
                 trigger:
@@ -371,11 +399,11 @@ odoo.define("ssi_outsource_work.outsource_work_outstanding_type_tour", function 
                 trigger:
                     '.o_app[data-menu-xmlid="ssi_outsource_work.menu_root_outsource_work"]',
             },
-            {
-                content: "Open the Configuration menu",
-                trigger:
-                    '.o_menu_sections [data-menu-xmlid="ssi_outsource_work.menu_outsource_work_configuration"]',
-            },
+            openMenuSectionStep(
+                "Open the Configuration menu",
+                "ssi_outsource_work.menu_outsource_work_configuration",
+                true
+            ),
             {
                 content: "Open the Outstanding Types menu",
                 trigger:
